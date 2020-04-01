@@ -1,4 +1,4 @@
-package com.dmrasf.record;
+package com.dmrasf.record.home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.dmrasf.record.R;
 
 import java.util.ArrayList;
 

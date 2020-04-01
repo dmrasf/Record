@@ -1,4 +1,4 @@
-package com.dmrasf.record;
+package com.dmrasf.record.home;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +10,7 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+import com.dmrasf.record.R;
 
 import java.util.ArrayList;
 

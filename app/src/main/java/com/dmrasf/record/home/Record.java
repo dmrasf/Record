@@ -1,4 +1,4 @@
-package com.dmrasf.record;
+package com.dmrasf.record.home;
 
 // 不同的记录
 public class Record {

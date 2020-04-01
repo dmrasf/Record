@@ -7,13 +7,13 @@
 
     <fragment
             android:id="@+id/navigation_home"
-            android:name="com.dmrasf.record.ItemRecordFragment"
+            android:name="com.dmrasf.record.home.ItemRecordFragment"
             android:label="Home"
             tools:layout="@layout/fragment_item_record"/>
 
     <fragment
             android:id="@+id/navigation_about"
-            android:name="com.dmrasf.record.AboutMeFragment"
+            android:name="com.dmrasf.record.aboutme.AboutMeFragment"
             android:label="About"
             tools:layout="@layout/fragment_aboutme"/>
 

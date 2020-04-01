@@ -1,12 +1,9 @@
-package com.dmrasf.record;
+package com.dmrasf.record.home;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.*;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,9 +13,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.dmrasf.record.R;
 
 import java.util.ArrayList;
 import java.util.Objects;
+
 
 public class ItemRecordFragment extends Fragment {
 
@@ -26,6 +25,10 @@ public class ItemRecordFragment extends Fragment {
     private ItemRecordAdapter itemRecordAdapter;
 
     public ItemRecordFragment() {
+        // record 的标题 简略信息  不一定是  string
+        for (int i = 0; i < 5; i++) {
+            itemRecords.add(new Record(String.valueOf(i), R.drawable.cheese_1));
+        }
     }
 
     @Nullable
@@ -37,11 +40,6 @@ public class ItemRecordFragment extends Fragment {
 
         initToolbar(rootView);
 
-        // record 的标题 简略信息  不一定是  string
-        for (int i = 0; i < 5; i++) {
-            itemRecords.add(new Record(String.valueOf(i), R.drawable.cheese_1));
-        }
-
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.list_record);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         itemRecordAdapter = new ItemRecordAdapter(getContext(), itemRecords);
@@ -52,7 +50,7 @@ public class ItemRecordFragment extends Fragment {
 
     private void initToolbar(View rootView) {
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
