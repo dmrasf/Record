@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/main_navigation"
+            app:startDestination="@+id/navigation_home" tools:ignore="UnusedNavigation">
+
+    <fragment
+            android:id="@+id/navigation_home"
+            android:name="com.dmrasf.record.ItemRecordFragment"
+            android:label="Home"
+            tools:layout="@layout/fragment_item_record"/>
+
+    <fragment
+            android:id="@+id/navigation_about"
+            android:name="com.dmrasf.record.AboutMeFragment"
+            android:label="About"
+            tools:layout="@layout/fragment_aboutme"/>
+
+</navigation>
