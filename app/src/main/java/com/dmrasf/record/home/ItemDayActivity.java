@@ -2,6 +2,7 @@ package com.dmrasf.record.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -20,6 +21,8 @@ public class ItemDayActivity extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.avtivity_item_day);
+
+        Log.e("==========", "onCreate ItemDayActivity");
 
         // 初始化toolbar
         initToolbar();
@@ -77,4 +80,23 @@ public class ItemDayActivity extends AppCompatActivity {
 //            }
 //        }
 //    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e("==========", "onStop ItemDayActivity");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e("==========", "onDestroy ItemDayActivity");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("==========", "onResume ItemDayActivity");
+    }
 }

@@ -2,6 +2,7 @@ package com.dmrasf.record.home;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.*;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ public class ItemRecordFragment extends Fragment {
         for (int i = 0; i < 5; i++) {
             itemRecords.add(new Record(String.valueOf(i), R.drawable.cheese_1));
         }
+        Log.e("==========", "new ItemRecordFragment");
     }
 
     @Nullable
@@ -36,7 +38,9 @@ public class ItemRecordFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_item_record, container, false);
 
-        Toast.makeText(getActivity(), "ItemRecordFragment", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "ItemRecordFragment 里的 onCreateView", Toast.LENGTH_SHORT).show();
+
+        Log.e("==========", "onCreateView ItemRecordFragment");
 
         initToolbar(rootView);
 
@@ -99,4 +103,21 @@ public class ItemRecordFragment extends Fragment {
         builder.create().show();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e("==========", "onStop ItemRecordFragment");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("==========", "onResume ItemRecordFragment");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e("==========", "onDestroy ItemRecordFragment");
+    }
 }

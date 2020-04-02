@@ -3,6 +3,7 @@ package com.dmrasf.record.home;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -22,6 +23,8 @@ public class DayDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.day_detail);
+
+        Log.e("==========", "onCreate DayDetailActivity");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -76,4 +79,23 @@ public class DayDetailActivity extends AppCompatActivity {
 //        }
 //        return super.onOptionsItemSelected(item);
 //    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e("==========", "onStop DayDetailActivity");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("==========", "onResume DayDetailActivity");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e("==========", "onDestroy DayDetailActivity");
+    }
 }
