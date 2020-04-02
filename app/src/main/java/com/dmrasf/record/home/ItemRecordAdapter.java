@@ -1,5 +1,6 @@
 package com.dmrasf.record.home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,7 +13,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import com.dmrasf.record.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 // 每个record的操作  侧滑删除  按钮添加 ...
@@ -58,7 +61,8 @@ public class ItemRecordAdapter extends
         Record currentRecord = mRecords.get(position);
         holder.textView.setText(currentRecord.getTitle());
         holder.imageView.setImageResource(currentRecord.getRecordImage());
-        holder.dateTextView.setText(String.valueOf(currentRecord.getDate()));
+        @SuppressLint("SimpleDateFormat") String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(currentRecord.getDate());
+        holder.dateTextView.setText(date);
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
