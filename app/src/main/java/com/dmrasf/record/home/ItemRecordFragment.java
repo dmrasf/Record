@@ -40,10 +40,6 @@ public class ItemRecordFragment extends Fragment {
     };
 
     public ItemRecordFragment() {
-        // record 的标题 简略信息  不一定是  string
-        for (int i = 0; i < 5; i++) {
-            itemRecords.add(new Record(String.valueOf(i), R.drawable.cheese_1));
-        }
         Log.e("==========", "new ItemRecordFragment");
     }
 
@@ -58,8 +54,9 @@ public class ItemRecordFragment extends Fragment {
 
         initToolbar(rootView);
 
-        //数据库
+        //数据库 并从数据库中提取数据
         initDatabase(rootView);
+        updateItemRecordsFromDb(itemRecords);
 
         // 许多record
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.list_record);
@@ -134,6 +131,8 @@ public class ItemRecordFragment extends Fragment {
 
     //根据数据库更新itemRecordAdapter
     private void updateItemRecordsFromDb(ArrayList<Record> itemRecords) {
+        //添加数据前先清理数据
+        itemRecords.clear();
         Cursor cursor = db.query(RecordAndDayContract.RecordEntry.TABLE_NAME, projection,
                 null, null,
                 null, null, null);
