@@ -27,6 +27,7 @@ public class ItemRecordAdapter extends
         public final View view;
         public final ImageView imageView;
         public final TextView textView;
+        public final TextView dateTextView;
         public final Button button;
 
         public ViewHolder(View v) {
@@ -34,6 +35,7 @@ public class ItemRecordAdapter extends
             view = v;
             imageView = v.findViewById(R.id.item_record_image_view);
             textView = v.findViewById(R.id.item_record_text_view);
+            dateTextView = v.findViewById(R.id.item_record_date_text_view);
             button = v.findViewById(R.id.item_record_button);
         }
     }
@@ -56,6 +58,7 @@ public class ItemRecordAdapter extends
         Record currentRecord = mRecords.get(position);
         holder.textView.setText(currentRecord.getTitle());
         holder.imageView.setImageResource(currentRecord.getRecordImage());
+        holder.dateTextView.setText(String.valueOf(currentRecord.getDate()));
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override

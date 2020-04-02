@@ -1,6 +1,9 @@
 package com.dmrasf.record.home;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -15,8 +18,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.dmrasf.record.R;
+import com.dmrasf.record.data.RecordAndDayContract;
+import com.dmrasf.record.data.RecordDbHelper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 
@@ -24,6 +30,14 @@ public class ItemRecordFragment extends Fragment {
 
     private ArrayList<Record> itemRecords = new ArrayList<>();
     private ItemRecordAdapter itemRecordAdapter;
+    private ContentValues values = new ContentValues();
+    private SQLiteDatabase db;
+    //想要从数据库中查询的数据
+    private String[] projection = {
+            RecordAndDayContract.RecordEntry.COLUMN_TITLE,
+            RecordAndDayContract.RecordEntry.COLUMN_DATE,
+            RecordAndDayContract.RecordEntry.COLUMN_DAYS,
+    };
 
     public ItemRecordFragment() {
         // record 的标题 简略信息  不一定是  string
@@ -44,6 +58,10 @@ public class ItemRecordFragment extends Fragment {
 
         initToolbar(rootView);
 
+        //数据库
+        initDatabase(rootView);
+
+        // 许多record
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.list_record);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         itemRecordAdapter = new ItemRecordAdapter(getContext(), itemRecords);
@@ -74,33 +92,64 @@ public class ItemRecordFragment extends Fragment {
         });
     }
 
+    private void initDatabase(View rootView) {
+        RecordDbHelper recordDbHelper = new RecordDbHelper(rootView.getContext());
+        db = recordDbHelper.getReadableDatabase();
+    }
+
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.main_menu, menu);
     }
 
+    //新建一个record 并存到数据库中 同时更新 itemRecordAdapter
     private void showInput() {
         final EditText editText = new EditText(getContext());
-        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext())).setTitle("娶个名字：").setView(editText)
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext())).setTitle("取个标题：").setView(editText)
                 .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(getActivity(), "输入内容为：" + editText.getText().toString() + " " + String.valueOf(i)
-                                , Toast.LENGTH_LONG).show();
-                        //根据输入新建一个record
-                        itemRecords.add(new Record(editText.getText().toString(), R.drawable.cheese_4));
+                        //用 ContentValues类 向数据库添加数据 并更新adapter
+                        insertNewRecordToDb(editText.getText().toString());
+                        updateItemRecordsFromDb(itemRecords);
                         //刷新界面
                         itemRecordAdapter.notifyDataSetChanged();
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getActivity(), "输入内容为：" + editText.getText().toString() + " " + String.valueOf(which)
-                                , Toast.LENGTH_LONG).show();
                     }
                 });
         builder.create().show();
+    }
+
+    private void insertNewRecordToDb(String newRecordTitle) {
+        values.put(RecordAndDayContract.RecordEntry.COLUMN_TITLE, newRecordTitle);
+        values.put(RecordAndDayContract.RecordEntry.COLUMN_DATE, new Date().getTime());
+        values.put(RecordAndDayContract.RecordEntry.COLUMN_DAYS, 0);
+        values.put(RecordAndDayContract.RecordEntry.COLUMN_DAY_TABLE, "null");
+        db.insert(RecordAndDayContract.RecordEntry.TABLE_NAME, null, values);
+    }
+
+    //根据数据库更新itemRecordAdapter
+    private void updateItemRecordsFromDb(ArrayList<Record> itemRecords) {
+        Cursor cursor = db.query(RecordAndDayContract.RecordEntry.TABLE_NAME, projection,
+                null, null,
+                null, null, null);
+        for (int i = 0; i < cursor.getCount(); i++) {
+            cursor.moveToPosition(i);
+            String newTitle = cursor.getString(cursor.getColumnIndex(RecordAndDayContract.RecordEntry.COLUMN_TITLE));
+            long createDate = cursor.getLong(cursor.getColumnIndex(RecordAndDayContract.RecordEntry.COLUMN_DATE));
+            itemRecords.add(new Record(newTitle, R.drawable.cheese_2, createDate));
+        }
+        cursor.close();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e("==========", "onStart ItemRecordFragment");
     }
 
     @Override

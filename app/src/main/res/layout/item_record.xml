@@ -14,18 +14,36 @@
             android:id="@+id/item_record_image_view"
             android:src="@mipmap/ic_launcher"/>
 
-    <TextView
+    <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center"
             android:layout_marginStart="16dp"
-            android:text="1"
-            android:textSize="20sp"
-            android:textStyle="bold"
             android:layout_toEndOf="@+id/item_record_image_view"
-            android:fontFamily="sans-serif-medium"
-            android:id="@+id/item_record_text_view"/>
+            android:orientation="vertical"
+            android:layout_height="match_parent">
 
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="0dp"
+                android:text="1"
+                android:textSize="15sp"
+                android:gravity="bottom"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                android:id="@+id/item_record_text_view"/>
+
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="0dp"
+                android:text="1"
+                android:textSize="10sp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                android:id="@+id/item_record_date_text_view"/>
+
+    </LinearLayout>
     <Button
             android:layout_width="30dp"
             android:layout_height="30dp"
