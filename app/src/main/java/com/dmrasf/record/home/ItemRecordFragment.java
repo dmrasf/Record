@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.dmrasf.record.R;
@@ -63,6 +64,8 @@ public class ItemRecordFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         itemRecordAdapter = new ItemRecordAdapter(getContext(), itemRecords);
         recyclerView.setAdapter(itemRecordAdapter);
+//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemRecordTouchCallback(itemRecordAdapter));
+//        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         return rootView;
     }
@@ -71,6 +74,7 @@ public class ItemRecordFragment extends Fragment {
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
+
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

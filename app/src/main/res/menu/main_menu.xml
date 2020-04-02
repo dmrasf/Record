@@ -4,13 +4,12 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
             android:id="@+id/action_add_new"
-            android:icon="@drawable/ic_done"
-            android:title="new"
-            app:showAsAction="ifRoom"/>
+            android:icon="@drawable/add"
+            app:showAsAction="ifRoom"
+            android:title="add"/>
 
     <item
             android:id="@+id/action_settings"
-            android:icon="@drawable/ic_done"
             android:title="all"
             app:showAsAction="never"/>
 

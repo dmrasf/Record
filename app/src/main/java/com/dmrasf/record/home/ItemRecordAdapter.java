@@ -83,6 +83,10 @@ public class ItemRecordAdapter extends
         });
     }
 
+    public void onItemRemove(int position) {
+        mRecords.remove(position);
+    }
+
     //选择照相机 相册
     private void showList() {
         final String[] items = {"相机", "相册"};
