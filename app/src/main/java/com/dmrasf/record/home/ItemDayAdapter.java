@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,8 +31,14 @@ public class ItemDayAdapter extends ArrayAdapter<Day> {
 
         Day currentDay = getItem(position);
 
+        ImageView imageView = (ImageView) itemDetailView.findViewById(R.id.item_day_image_view);
+        imageView.setImageResource(currentDay.getDayImage());
+
         TextView title = (TextView) itemDetailView.findViewById(R.id.item_day_text_view);
         title.setText(currentDay.getTitle());
+
+        TextView date = (TextView) itemDetailView.findViewById(R.id.item_day_date_text_view);
+        date.setText(String.valueOf(currentDay.getDate()));
 
         return itemDetailView;
     }

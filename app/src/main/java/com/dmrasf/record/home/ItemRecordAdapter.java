@@ -28,7 +28,7 @@ public class ItemRecordAdapter extends
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public final View view;
-        public final ImageView imageView;
+//        public final ImageView imageView;
         public final TextView textView;
         public final TextView dateTextView;
         public final Button button;
@@ -36,7 +36,7 @@ public class ItemRecordAdapter extends
         public ViewHolder(View v) {
             super(v);
             view = v;
-            imageView = v.findViewById(R.id.item_record_image_view);
+//            imageView = v.findViewById(R.id.item_record_image_view);
             textView = v.findViewById(R.id.item_record_text_view);
             dateTextView = v.findViewById(R.id.item_record_date_text_view);
             button = v.findViewById(R.id.item_record_button);
@@ -60,7 +60,7 @@ public class ItemRecordAdapter extends
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         Record currentRecord = mRecords.get(position);
         holder.textView.setText(currentRecord.getTitle());
-        holder.imageView.setImageResource(currentRecord.getRecordImage());
+//        holder.imageView.setImageResource(currentRecord.getRecordImage());
         @SuppressLint("SimpleDateFormat") String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(currentRecord.getDate());
         holder.dateTextView.setText(date);
 

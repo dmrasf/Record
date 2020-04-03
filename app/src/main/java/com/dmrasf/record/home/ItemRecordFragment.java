@@ -18,10 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.dmrasf.record.MainActivity;
 import com.dmrasf.record.R;
 import com.dmrasf.record.data.RecordAndDayContract;
 import com.dmrasf.record.data.RecordDbHelper;
@@ -48,6 +46,13 @@ public class ItemRecordFragment extends Fragment {
         Log.e("==========", "new ItemRecordFragment");
     }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.e("==========", "onCreate ItemRecordFragment");
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -57,7 +62,7 @@ public class ItemRecordFragment extends Fragment {
 
         Log.e("==========", "onCreateView ItemRecordFragment");
 
-        initToolbar(rootView);
+        initToolbar();
 
         //数据库 并从数据库中提取数据
         initDatabase(rootView);
@@ -68,14 +73,15 @@ public class ItemRecordFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         itemRecordAdapter = new ItemRecordAdapter(getContext(), itemRecords);
         recyclerView.setAdapter(itemRecordAdapter);
+
 //        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemRecordTouchCallback(itemRecordAdapter));
 //        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         return rootView;
     }
 
-    private void initToolbar(final View rootView) {
-        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) Objects.requireNonNull(getActivity()).findViewById(R.id.toolbar);
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
 
@@ -84,8 +90,6 @@ public class ItemRecordFragment extends Fragment {
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
 //        //使用自带的导航条  而且有动画
 //        actionBarDrawerToggle.syncState();
-
-
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override

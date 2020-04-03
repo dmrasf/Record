@@ -4,23 +4,20 @@
               android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/Theme.AppCompat.Light"
-            app:navigationIcon="@drawable/pc_table"
-            android:background="?attr/colorPrimary"/>
-
-    <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--            android:id="@+id/toolbar"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="?attr/actionBarSize"-->
+<!--            app:popupTheme="@style/Theme.AppCompat.Light"-->
+<!--            app:navigationIcon="@drawable/pc_table"-->
+<!--            android:background="?attr/colorPrimary"/>-->
 
     <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="123456432"
-            android:textSize="30sp"
+            android:id="@+id/about_text_view"
+            android:textColor="@android:color/black"
+            android:textSize="60sp"
             android:textStyle="bold"
             android:gravity="center" />
 

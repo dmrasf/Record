@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.dmrasf.record.R;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 public class ItemDayActivity extends AppCompatActivity {
@@ -21,8 +22,6 @@ public class ItemDayActivity extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.avtivity_item_day);
-
-        Log.e("==========", "onCreate ItemDayActivity");
 
         // 初始化toolbar
         initToolbar();
@@ -33,11 +32,9 @@ public class ItemDayActivity extends AppCompatActivity {
         Toast.makeText(this, "ItemDayActivity" + recordTitle, Toast.LENGTH_SHORT).show();
 
         final ArrayList<Day> itemDay = new ArrayList<>();
-        itemDay.add(new Day(recordTitle + " " + String.valueOf(1), R.drawable.cheese_1));
-        itemDay.add(new Day(recordTitle + " " + String.valueOf(2), R.drawable.cheese_2));
-        itemDay.add(new Day(recordTitle + " " + String.valueOf(3), R.drawable.cheese_3));
-        itemDay.add(new Day(recordTitle + " " + String.valueOf(4), R.drawable.cheese_4));
-        itemDay.add(new Day(recordTitle + " " + String.valueOf(5), R.drawable.cheese_5));
+        for (int i = 0; i < 20; i++) {
+            itemDay.add(new Day(recordTitle + " " + String.valueOf(i), R.drawable.camera, new Date().getTime()));
+        }
 
         final ItemDayAdapter itemRecordAdapter =
                 new ItemDayAdapter(this, itemDay);
@@ -80,23 +77,4 @@ public class ItemDayActivity extends AppCompatActivity {
 //            }
 //        }
 //    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.e("==========", "onStop ItemDayActivity");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.e("==========", "onDestroy ItemDayActivity");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.e("==========", "onResume ItemDayActivity");
-    }
 }

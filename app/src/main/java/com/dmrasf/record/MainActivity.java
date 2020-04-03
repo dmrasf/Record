@@ -11,6 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -27,9 +28,10 @@ public class MainActivity extends AppCompatActivity {
         Log.e("==========", "onCreate MainActivity");
 
         // 通过bottom 绑定到不同的Fragment
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom);
         NavController navController = Navigation.findNavController(this, R.id.main_fragment);
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
 
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_view);
         //侧边
