@@ -12,10 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import com.dmrasf.record.R;
+import com.dmrasf.record.home.item_day.ItemDayActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 
 // 每个record的操作  侧滑删除  按钮添加 ...

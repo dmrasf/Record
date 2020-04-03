@@ -1,9 +1,8 @@
-package com.dmrasf.record.home;
+package com.dmrasf.record.home.item_day.day_detail;
 
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;

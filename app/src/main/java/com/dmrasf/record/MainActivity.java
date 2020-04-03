@@ -23,15 +23,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toast.makeText(this, "创建了一个主界面 ----- MainActivity", Toast.LENGTH_SHORT).show();
-
         Log.e("==========", "onCreate MainActivity");
 
         // 通过bottom 绑定到不同的Fragment
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom);
         NavController navController = Navigation.findNavController(this, R.id.main_fragment);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
-
 
         final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_view);
         //侧边
@@ -45,24 +42,5 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.e("==========", "onStop MainActivity");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.e("==========", "onResume MainActivity");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.e("==========", "onDestroy MainActivity");
     }
 }

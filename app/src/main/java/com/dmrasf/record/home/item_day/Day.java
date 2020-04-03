@@ -1,4 +1,4 @@
-package com.dmrasf.record.home;
+package com.dmrasf.record.home.item_day;
 
 public class Day {
     private String mTitle;

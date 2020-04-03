@@ -1,8 +1,7 @@
-package com.dmrasf.record.home;
+package com.dmrasf.record.home.item_day;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -11,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.dmrasf.record.R;
+import com.dmrasf.record.home.item_day.day_detail.DayDetailActivity;
 
 import java.util.ArrayList;
 import java.util.Date;
