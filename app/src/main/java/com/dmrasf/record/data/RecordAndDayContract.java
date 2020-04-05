@@ -18,7 +18,6 @@ public class RecordAndDayContract {
     public static final String CONTENT_ITEM_TYPE =
             ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_RECORDS;
 
-
     public static abstract class RecordEntry implements BaseColumns {
 
         public static final String _ID = BaseColumns._ID;

@@ -1,10 +1,15 @@
 package com.dmrasf.record;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
@@ -28,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     private ItemRecordFragment itemRecordFragment = new ItemRecordFragment();
     private AboutMeFragment aboutMeFragment = new AboutMeFragment();
     private FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
+    private String mRecordTitle = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,5 +92,38 @@ public class MainActivity extends AppCompatActivity {
 
 //        // 可以去掉bottom的选项
 //        bottomNavigationView.getMenu().removeItem(R.id.navigation_about);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && data != null && data.getExtras() != null) {
+            if (requestCode == 1) {
+                Toast.makeText(this, "拍照返回", Toast.LENGTH_SHORT).show();
+                Bundle bundle = data.getExtras();
+
+                bundle.size();
+
+                Bitmap bitmap = (Bitmap) bundle.get("data");
+
+
+                savePicture(bitmap);
+            }
+            else if (requestCode == 2) {
+                Toast.makeText(this, "相册返回", Toast.LENGTH_SHORT).show();
+                Uri uri = data.getData();
+                String path = uri.getPath();
+
+                Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void savePicture(Bitmap bitmap) {
+
+    }
+
+    public void setRecordTitle(String recordTitle) {
+        mRecordTitle = recordTitle;
     }
 }

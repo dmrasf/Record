@@ -1,7 +1,9 @@
 package com.dmrasf.record.home;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.dmrasf.record.MainActivity;
 import com.dmrasf.record.R;
 import com.dmrasf.record.data.RecordAndDayContract;
 
@@ -66,7 +69,7 @@ public class ItemRecordFragment extends Fragment {
         // 许多record
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.list_record);
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
-        itemRecordAdapter = new ItemRecordAdapter(getContext(), itemRecords);
+        itemRecordAdapter = new ItemRecordAdapter(getActivity(), itemRecords);
         recyclerView.setAdapter(itemRecordAdapter);
 
 //        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemRecordTouchCallback(itemRecordAdapter));
@@ -103,7 +106,6 @@ public class ItemRecordFragment extends Fragment {
             }
         });
     }
-
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {

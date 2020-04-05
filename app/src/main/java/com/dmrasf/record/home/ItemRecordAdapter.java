@@ -1,9 +1,12 @@
 package com.dmrasf.record.home;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+import com.dmrasf.record.MainActivity;
 import com.dmrasf.record.R;
 import com.dmrasf.record.home.item_day.ItemDayActivity;
 
@@ -18,11 +22,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
+
 // 每个record的操作  侧滑删除  按钮添加 ...
 public class ItemRecordAdapter extends
         RecyclerView.Adapter<ItemRecordAdapter.ViewHolder> {
 
-    private Context mContext;
+    private MainActivity mActivity;
     private ArrayList<Record> mRecords;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -43,8 +48,8 @@ public class ItemRecordAdapter extends
         }
     }
 
-    public ItemRecordAdapter(Context context, ArrayList<Record> records) {
-        mContext = context;
+    public ItemRecordAdapter(Activity activity, ArrayList<Record> records) {
+        mActivity = (MainActivity) activity;
         mRecords = records;
     }
 
@@ -58,7 +63,7 @@ public class ItemRecordAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        Record currentRecord = mRecords.get(position);
+        final Record currentRecord = mRecords.get(position);
         holder.textView.setText(currentRecord.getTitle());
 //        holder.imageView.setImageResource(currentRecord.getRecordImage());
         @SuppressLint("SimpleDateFormat") String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(currentRecord.getDate());
@@ -77,8 +82,9 @@ public class ItemRecordAdapter extends
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "button" + holder.textView.getText(), Toast.LENGTH_SHORT).show();
-                showList();
+                Toast.makeText(mActivity, "button" + holder.textView.getText(), Toast.LENGTH_SHORT).show();
+                showList(currentRecord.getTitle());
+
             }
         });
     }
@@ -88,18 +94,20 @@ public class ItemRecordAdapter extends
     }
 
     //选择照相机 相册
-    private void showList() {
+    private void showList(final String recordTitle) {
         final String[] items = {"相机", "相册"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext)
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity)
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(mContext, "你点击的内容为： " + items[i], Toast.LENGTH_LONG).show();
+                        Toast.makeText(mActivity, "你点击的内容为： " + items[i], Toast.LENGTH_LONG).show();
+                        mActivity.setRecordTitle(recordTitle);
                         if (i == 0) {
-
+                            openCamera();
                         } else {
-
+                            openPicture();
                         }
+                        // 选择图片后进入写模式
                     }
                 });
         builder.create().show();
@@ -107,5 +115,16 @@ public class ItemRecordAdapter extends
     @Override
     public int getItemCount() {
         return mRecords.size();
+    }
+
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);// 启动系统相机
+        mActivity.startActivityForResult(intent, 1);
+    }
+
+    private void openPicture() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        mActivity.startActivityForResult(intent, 2);
     }
 }
