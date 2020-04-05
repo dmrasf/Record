@@ -21,6 +21,8 @@ import com.dmrasf.record.home.ItemRecordFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     private ItemRecordFragment itemRecordFragment = new ItemRecordFragment();
@@ -56,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                                     ft.hide(aboutMeFragment).show(itemRecordFragment).commit();
                                 } else {
                                     // 回到顶部
-                                    RecyclerView recyclerView = itemRecordFragment.getActivity().findViewById(R.id.list_record);
+                                    RecyclerView recyclerView = Objects.requireNonNull(itemRecordFragment.getActivity()).findViewById(R.id.list_record);
                                     recyclerView.scrollToPosition(0);
                                 }
                                 return true;

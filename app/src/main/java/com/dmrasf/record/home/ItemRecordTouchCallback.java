@@ -1,10 +1,8 @@
 package com.dmrasf.record.home;
 
-import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import com.dmrasf.record.data.RecordDbHelper;
 
 public class ItemRecordTouchCallback extends ItemTouchHelper.Callback {
 

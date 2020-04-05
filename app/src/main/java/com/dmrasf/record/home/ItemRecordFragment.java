@@ -1,10 +1,9 @@
 package com.dmrasf.record.home;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -22,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.dmrasf.record.R;
 import com.dmrasf.record.data.RecordAndDayContract;
-import com.dmrasf.record.data.RecordDbHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,8 +31,6 @@ public class ItemRecordFragment extends Fragment {
 
     private ArrayList<Record> itemRecords = new ArrayList<>();
     private ItemRecordAdapter itemRecordAdapter;
-    private ContentValues values = new ContentValues();
-    private SQLiteDatabase db;
     //想要从数据库中查询的数据
     private String[] projection = {
             RecordAndDayContract.RecordEntry.COLUMN_TITLE,
@@ -65,7 +61,6 @@ public class ItemRecordFragment extends Fragment {
         initToolbar();
 
         //数据库 并从数据库中提取数据
-        initDatabase(rootView);
         updateItemRecordsFromDb(itemRecords);
 
         // 许多record
@@ -109,10 +104,6 @@ public class ItemRecordFragment extends Fragment {
         });
     }
 
-    private void initDatabase(View rootView) {
-        RecordDbHelper recordDbHelper = new RecordDbHelper(rootView.getContext());
-        db = recordDbHelper.getReadableDatabase();
-    }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -142,19 +133,19 @@ public class ItemRecordFragment extends Fragment {
     }
 
     private void insertNewRecordToDb(String newRecordTitle) {
+        ContentValues values = new ContentValues();
         values.put(RecordAndDayContract.RecordEntry.COLUMN_TITLE, newRecordTitle);
         values.put(RecordAndDayContract.RecordEntry.COLUMN_DATE, new Date().getTime());
         values.put(RecordAndDayContract.RecordEntry.COLUMN_DAYS, 0);
         values.put(RecordAndDayContract.RecordEntry.COLUMN_DAY_TABLE, "null");
-        db.insert(RecordAndDayContract.RecordEntry.TABLE_NAME, null, values);
+        Uri newUri = getActivity().getContentResolver().insert(RecordAndDayContract.RecordEntry.CONTENT_URI, values);
     }
 
     //根据数据库更新itemRecordAdapter
     private void updateItemRecordsFromDb(ArrayList<Record> itemRecords) {
         //添加数据前先清理数据
         itemRecords.clear();
-        Cursor cursor = db.query(RecordAndDayContract.RecordEntry.TABLE_NAME, projection,
-                null, null,
+        Cursor cursor = getActivity().getContentResolver().query(RecordAndDayContract.RecordEntry.CONTENT_URI, projection,
                 null, null, null);
         for (int i = 0; i < cursor.getCount(); i++) {
             cursor.moveToPosition(i);
@@ -163,29 +154,5 @@ public class ItemRecordFragment extends Fragment {
             itemRecords.add(new Record(newTitle, R.drawable.cheese_2, createDate));
         }
         cursor.close();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.e("==========", "onStart ItemRecordFragment");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.e("==========", "onStop ItemRecordFragment");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.e("==========", "onResume ItemRecordFragment");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.e("==========", "onDestroy ItemRecordFragment");
     }
 }
