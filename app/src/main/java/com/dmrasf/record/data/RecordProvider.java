@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.dmrasf.record.home.Record;
 
 public class RecordProvider extends ContentProvider {
 
@@ -26,11 +27,11 @@ public class RecordProvider extends ContentProvider {
         sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, RecordAndDayContract.PATH_RECORDS + "/#", RECORD_ID);
     }
 
-    private DbHelper mRecordDbHelper;
+    private DbHelper mDbHelper;
 
     @Override
     public boolean onCreate() {
-        mRecordDbHelper = new DbHelper(getContext());
+        mDbHelper = new DbHelper(getContext());
         return true;
     }
 
@@ -38,7 +39,7 @@ public class RecordProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
 
-        SQLiteDatabase db = mRecordDbHelper.getReadableDatabase();
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor cursor;
 
         int match = sUriMatcher.match(uri);
@@ -99,7 +100,7 @@ public class RecordProvider extends ContentProvider {
         }
         cursor.close();
 
-        SQLiteDatabase db = mRecordDbHelper.getReadableDatabase();
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
         long id = db.insert(RecordAndDayContract.RecordEntry.TABLE_NAME, null, values);
         if (id == -1) {
             Log.e(LOG_TAG, "Failed to insert row for " + uri);
@@ -122,11 +123,67 @@ public class RecordProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case RECORDS:
+                // 删除附带的days表
+                deleteDayTable(db, selection, selectionArgs);
+                return db.delete(RecordAndDayContract.RecordEntry.TABLE_NAME, selection, selectionArgs);
+            case RECORD_ID:
+                selection = RecordAndDayContract.RecordEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return db.delete(RecordAndDayContract.RecordEntry.TABLE_NAME, selection, selectionArgs);
+            default:
+                return 0;
+        }
+    }
+
+    private void deleteDayTable(SQLiteDatabase db, String selection, String[] selectionArgs) {
+        if (selection.equals(RecordAndDayContract.RecordEntry.COLUMN_TITLE)) {
+
+            // 询问是否删除
+
+            // 删除实际文件
+
+            for (String day_tableName : selectionArgs) {
+                String SQL_DROP_DAY_TABLE = "DROP TABLE " + day_tableName + ";";
+                Log.e("-----------", SQL_DROP_DAY_TABLE);
+                db.execSQL(SQL_DROP_DAY_TABLE);
+            }
+        }
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case RECORDS:
+                return updateRecord(uri, values, selection, selectionArgs);
+            case RECORD_ID:
+                selection = RecordAndDayContract.RecordEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                return updateRecord(uri, values, selection, selectionArgs);
+            default:
+                return 0;
+        }
+    }
+
+    private int updateRecord(Uri uri, ContentValues values, String selection, String[] selectionArgs){
+        if (values.containsKey(RecordAndDayContract.RecordEntry.COLUMN_TITLE)) {
+            String name = values.getAsString(RecordAndDayContract.RecordEntry.COLUMN_TITLE);
+            if (name.isEmpty()) {
+                Toast.makeText(getContext(), "该Record已存在", Toast.LENGTH_SHORT).show();
+                return 0;
+            }
+        }
+
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        return db.update(RecordAndDayContract.RecordEntry.TABLE_NAME, values, selection, selectionArgs);
     }
 }
