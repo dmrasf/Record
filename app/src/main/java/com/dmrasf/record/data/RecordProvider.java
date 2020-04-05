@@ -65,7 +65,15 @@ public class RecordProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case RECORDS:
+                return RecordAndDayContract.CONTENT_LIST_TYPE;
+            case RECORD_ID:
+                return RecordAndDayContract.CONTENT_ITEM_TYPE;
+            default:
+                return null;
+        }
     }
 
     @Nullable
