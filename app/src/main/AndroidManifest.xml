@@ -24,6 +24,9 @@
         <activity android:name=".home.item_day.ItemDayActivity"
                   android:parentActivityName=".MainActivity">
         </activity>
+        <provider android:authorities="com.dmrasf.record"
+                  android:name=".data.RecordProvider"
+                  android:exported="false" />
     </application>
 
 </manifest>

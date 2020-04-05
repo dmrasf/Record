@@ -97,7 +97,7 @@ public class ItemRecordFragment extends Fragment {
                 switch (item.getItemId()) {
                     case R.id.action_add_new: {
                         // 添加record  异步
-                        showInput();
+                        addNewRecord();
                         break;
                     }
                     case R.id.action_settings: {
@@ -121,7 +121,7 @@ public class ItemRecordFragment extends Fragment {
     }
 
     //新建一个record 并存到数据库中 同时更新 itemRecordAdapter
-    private void showInput() {
+    private void addNewRecord() {
         final EditText editText = new EditText(getContext());
         AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext())).setTitle("取个标题：").setView(editText)
                 .setPositiveButton("确认", new DialogInterface.OnClickListener() {
