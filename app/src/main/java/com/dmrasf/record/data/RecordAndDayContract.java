@@ -39,5 +39,9 @@ public class RecordAndDayContract {
         public static final String COLUMN_DATE = "date";
         public static final String COLUMN_IMG = "img";
 
+        public static final String CONTENT_DAY_LIST_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/";
+        public static final String CONTENT_DAY_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/";
     }
 }

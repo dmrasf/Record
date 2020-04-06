@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dmrasf.record.MainActivity;
 import com.dmrasf.record.R;
 import com.dmrasf.record.data.RecordAndDayContract;
+import com.dmrasf.record.data.RecordProvider;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,6 +41,7 @@ public class ItemRecordFragment extends Fragment {
             RecordAndDayContract.RecordEntry.COLUMN_DATE,
             RecordAndDayContract.RecordEntry.COLUMN_DAYS,
     };
+
 
     public ItemRecordFragment() {
         Log.e("==========", "new ItemRecordFragment");
@@ -135,19 +137,21 @@ public class ItemRecordFragment extends Fragment {
     }
 
     private void insertNewRecordToDb(String newRecordTitle) {
+        RecordProvider recordProvider = new RecordProvider(getContext());
         ContentValues values = new ContentValues();
         values.put(RecordAndDayContract.RecordEntry.COLUMN_TITLE, newRecordTitle);
         values.put(RecordAndDayContract.RecordEntry.COLUMN_DATE, new Date().getTime());
         values.put(RecordAndDayContract.RecordEntry.COLUMN_DAYS, 0);
         values.put(RecordAndDayContract.RecordEntry.COLUMN_DAY_TABLE, "null");
-        Uri newUri = getActivity().getContentResolver().insert(RecordAndDayContract.RecordEntry.CONTENT_URI, values);
+        Uri newUri = recordProvider.insert(RecordAndDayContract.RecordEntry.CONTENT_URI, values);
     }
 
     //根据数据库更新itemRecordAdapter
     private void updateItemRecordsFromDb(ArrayList<Record> itemRecords) {
         //添加数据前先清理数据
         itemRecords.clear();
-        Cursor cursor = getActivity().getContentResolver().query(RecordAndDayContract.RecordEntry.CONTENT_URI, projection,
+        RecordProvider recordProvider = new RecordProvider(getContext());
+        Cursor cursor = recordProvider.query(RecordAndDayContract.RecordEntry.CONTENT_URI, projection,
                 null, null, null);
         for (int i = 0; i < cursor.getCount(); i++) {
             cursor.moveToPosition(i);

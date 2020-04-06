@@ -1,9 +1,6 @@
 package com.dmrasf.record.data;
 
-import android.content.ContentProvider;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.UriMatcher;
+import android.content.*;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -11,7 +8,6 @@ import android.util.Log;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.dmrasf.record.home.Record;
 
 public class RecordProvider extends ContentProvider {
 
@@ -27,12 +23,19 @@ public class RecordProvider extends ContentProvider {
         sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, RecordAndDayContract.PATH_RECORDS + "/#", RECORD_ID);
     }
 
-    private DbHelper mDbHelper;
+    private RecordDbHelper mDbHelper;
 
     @Override
     public boolean onCreate() {
-        mDbHelper = new DbHelper(getContext());
+        mDbHelper = new RecordDbHelper(getContext());
         return true;
+    }
+
+    public RecordProvider(Context context) {
+        mDbHelper = new RecordDbHelper(context);
+    }
+
+    public RecordProvider() {
     }
 
     @Nullable
@@ -114,19 +117,7 @@ public class RecordProvider extends ContentProvider {
             Log.e(LOG_TAG, "Failed to insert row for " + uri);
             return null;
         }
-        // 新建days表 表名为record_title
-        createDayTable(db, name);
         return Uri.withAppendedPath(RecordAndDayContract.RecordEntry.CONTENT_URI, String.valueOf(id));
-    }
-
-    private void createDayTable(SQLiteDatabase db, String table_name) {
-        String SQL_CREATE_DAY_TABLE = "CREATE TABLE " + table_name + "("
-                + RecordAndDayContract.DayEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + RecordAndDayContract.DayEntry.COLUMN_DATE + " INTEGER NOT NULL, "
-                + RecordAndDayContract.DayEntry.COLUMN_TEXT + " TEXT NOT NULL, "
-                + RecordAndDayContract.DayEntry.COLUMN_IMG + " TEXT NOT NULL);";
-        Log.e("-----------", SQL_CREATE_DAY_TABLE);
-        db.execSQL(SQL_CREATE_DAY_TABLE);
     }
 
     @Override

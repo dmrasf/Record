@@ -1,12 +1,17 @@
 package com.dmrasf.record;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
@@ -22,10 +28,19 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.RecyclerView;
 import com.dmrasf.record.aboutme.AboutMeFragment;
+import com.dmrasf.record.data.DayDbHelper;
+import com.dmrasf.record.data.DayProvider;
+import com.dmrasf.record.data.RecordAndDayContract;
 import com.dmrasf.record.home.ItemRecordFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private AboutMeFragment aboutMeFragment = new AboutMeFragment();
     private FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
-    private String mRecordTitle = "";
+    public String recordTitle = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,15 +113,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && data != null && data.getExtras() != null) {
+            ImageView textView = aboutMeFragment.getActivity().findViewById(R.id.about_text_view);
             if (requestCode == 1) {
                 Toast.makeText(this, "拍照返回", Toast.LENGTH_SHORT).show();
                 Bundle bundle = data.getExtras();
-
-                bundle.size();
-
+                // 获取图片
                 Bitmap bitmap = (Bitmap) bundle.get("data");
 
-
+//                textView.setImageResource();
+                // 保存
                 savePicture(bitmap);
             }
             else if (requestCode == 2) {
@@ -114,16 +129,51 @@ public class MainActivity extends AppCompatActivity {
                 Uri uri = data.getData();
                 String path = uri.getPath();
 
+                textView.setImageURI(uri);
                 Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     private void savePicture(Bitmap bitmap) {
+        // 保存图片到实际路径
+        // 获取文件路径 不存在时会创建
+        File path = getExternalFilesDir(recordTitle);
+        // 新建一个文件名  以日期为名字
+        String pictureName = getPictureName();
+        String filePath = "";
+        if (bitmap != null && path != null) {
+            filePath = path.getPath() + File.separator + pictureName;
+            File newDay = new File(filePath);
 
+            OutputStream os = null;
+            try {
+                os = new FileOutputStream(newDay);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                os.flush();
+                os.close();
+            } catch (IOException e) {
+                filePath = "";
+            }
+
+            // 添加记录到数据库
+            DayProvider dayProvider = new DayProvider(this);
+            ContentValues values = new ContentValues();
+            values.put(RecordAndDayContract.DayEntry.COLUMN_IMG, pictureName);
+            values.put(RecordAndDayContract.DayEntry.COLUMN_DATE, new Date().getTime());
+            dayProvider.insert(Uri.withAppendedPath(RecordAndDayContract.BASE_CONTENT_URI, recordTitle), values);
+
+            Toast.makeText(this, path.getPath(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, pictureName, Toast.LENGTH_SHORT).show();
+        }
     }
 
-    public void setRecordTitle(String recordTitle) {
-        mRecordTitle = recordTitle;
+    @SuppressLint("SimpleDateFormat")
+    private String getPictureName() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()) + ".jpg";
+    }
+
+    public void setRecordTitle(String title) {
+        recordTitle = title;
     }
 }

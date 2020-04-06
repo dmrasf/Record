@@ -12,13 +12,10 @@
 <!--            app:navigationIcon="@drawable/pc_table"-->
 <!--            android:background="?attr/colorPrimary"/>-->
 
-    <TextView
+    <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/about_text_view"
-            android:textColor="@android:color/black"
-            android:textSize="60sp"
-            android:textStyle="bold"
             android:gravity="center" />
 
 </LinearLayout>

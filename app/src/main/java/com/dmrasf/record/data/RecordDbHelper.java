@@ -7,12 +7,12 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import com.dmrasf.record.data.RecordAndDayContract;
 
-public class DbHelper extends SQLiteOpenHelper {
+public class RecordDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "all.db";
     private static final int DATABASE_VERSION = 1;
 
-    public DbHelper(@Nullable Context context) {
+    public RecordDbHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
