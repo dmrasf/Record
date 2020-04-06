@@ -18,21 +18,23 @@ public class RecordProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-    static {
-        sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, RecordAndDayContract.PATH_RECORDS, RECORDS);
-        sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, RecordAndDayContract.PATH_RECORDS + "/#", RECORD_ID);
-    }
+//    static {
+//        sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, RecordAndDayContract.PATH_RECORDS, RECORDS);
+//        sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, RecordAndDayContract.PATH_RECORDS + "/#", RECORD_ID);
+//    }
 
     private RecordDbHelper mDbHelper;
 
     @Override
     public boolean onCreate() {
-        mDbHelper = new RecordDbHelper(getContext());
+//        mDbHelper = new RecordDbHelper(getContext());
         return true;
     }
 
     public RecordProvider(Context context) {
         mDbHelper = new RecordDbHelper(context);
+        sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, RecordAndDayContract.PATH_RECORDS, RECORDS);
+        sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, RecordAndDayContract.PATH_RECORDS + "/#", RECORD_ID);
     }
 
     public RecordProvider() {
@@ -117,6 +119,14 @@ public class RecordProvider extends ContentProvider {
             Log.e(LOG_TAG, "Failed to insert row for " + uri);
             return null;
         }
+        // 新建day
+        String SQL_CREATE_DAY_TABLE = "CREATE TABLE " + name + "("
+                + RecordAndDayContract.DayEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + RecordAndDayContract.DayEntry.COLUMN_DATE + " INTEGER NOT NULL, "
+                + RecordAndDayContract.DayEntry.COLUMN_TEXT + " TEXT, "
+                + RecordAndDayContract.DayEntry.COLUMN_IMG + " TEXT NOT NULL);";
+        Log.e("-----------", SQL_CREATE_DAY_TABLE);
+        db.execSQL(SQL_CREATE_DAY_TABLE);
         return Uri.withAppendedPath(RecordAndDayContract.RecordEntry.CONTENT_URI, String.valueOf(id));
     }
 

@@ -25,14 +25,16 @@ public class DayProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mDbHelper = new DayDbHelper(getContext(), ((MainActivity) getContext()).recordTitle);
-        sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, mDbHelper.Table_name, DAYS);
-        sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, mDbHelper.Table_name + "/#", DAYS_ID);
+//        mDbHelper = new DayDbHelper(getContext(), ((MainActivity) getContext()).recordTitle);
+//        sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, mDbHelper.Table_name, DAYS);
+//        sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, mDbHelper.Table_name + "/#", DAYS_ID);
         return true;
     }
 
     public DayProvider(Context context) {
         mDbHelper = new DayDbHelper(context, ((MainActivity) context).recordTitle);
+        sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, mDbHelper.Table_name, DAYS);
+        sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, mDbHelper.Table_name + "/#", DAYS_ID);
     }
 
     public DayProvider() {
@@ -43,7 +45,6 @@ public class DayProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
 
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
         Cursor cursor;
 
         int match = sUriMatcher.match(uri);
@@ -94,13 +95,6 @@ public class DayProvider extends ContentProvider {
     }
 
     private Uri insertDay(Uri uri, ContentValues values) {
-        String name = values.getAsString(mDbHelper.Table_name);
-        // 判断Record名是否为空
-        if (name.isEmpty()) {
-            Toast.makeText(getContext(), "day 为 null", Toast.LENGTH_SHORT).show();
-            return null;
-        }
-
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         long id = db.insert(mDbHelper.Table_name, null, values);
         if (id == -1) {
