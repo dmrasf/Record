@@ -34,10 +34,14 @@ public class RecordAndDayContract {
     public static abstract class DayEntry implements BaseColumns {
 
         public static final String _ID = BaseColumns._ID;
-//        public static final String TABLE_NAME = "days";
+        // 内容
         public static final String COLUMN_TEXT = "text";
+        // 创建日期
         public static final String COLUMN_DATE = "date";
+        // 缩略图
         public static final String COLUMN_IMG = "img";
+        // 文件路径
+        public static final String COLUMN_IMG_PATH = "img_path";
 
         public static final String CONTENT_DAY_LIST_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/";

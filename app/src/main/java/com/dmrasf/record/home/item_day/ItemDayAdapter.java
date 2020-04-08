@@ -32,12 +32,13 @@ public class ItemDayAdapter extends ArrayAdapter<Day> {
         Day currentDay = getItem(position);
 
         ImageView imageView = (ImageView) itemDetailView.findViewById(R.id.item_day_image_view);
-        imageView.setImageResource(currentDay.getDayImage());
+        imageView.setImageBitmap(currentDay.getBitmap());
 
         TextView title = (TextView) itemDetailView.findViewById(R.id.item_day_text_view);
-        title.setText(currentDay.getTitle());
+        title.setText(currentDay.getText());
 
         TextView date = (TextView) itemDetailView.findViewById(R.id.item_day_date_text_view);
+        long time = currentDay.getDate();
         date.setText(String.valueOf(currentDay.getDate()));
 
         return itemDetailView;

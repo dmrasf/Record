@@ -35,10 +35,7 @@ import com.dmrasf.record.home.ItemRecordFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -123,8 +120,7 @@ public class MainActivity extends AppCompatActivity {
 //                textView.setImageResource();
                 // 保存
                 savePicture(bitmap);
-            }
-            else if (requestCode == 2) {
+            } else if (requestCode == 2) {
                 Toast.makeText(this, "相册返回", Toast.LENGTH_SHORT).show();
                 Uri uri = data.getData();
                 String path = uri.getPath();
@@ -136,36 +132,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void savePicture(Bitmap bitmap) {
+
+        if (bitmap == null) {
+            Log.e("==========", "从相册或相机读取到的文件为空");
+            return;
+        }
+
         // 保存图片到实际路径
         // 获取文件路径 不存在时会创建
         File path = getExternalFilesDir(recordTitle);
         // 新建一个文件名  以日期为名字
         String pictureName = getPictureName();
         String filePath = "";
-        if (bitmap != null && path != null) {
-            filePath = path.getPath() + File.separator + pictureName;
-            File newDay = new File(filePath);
+        filePath = path.getPath() + File.separator + pictureName;
+        File newDay = new File(filePath);
 
-            OutputStream os = null;
-            try {
-                os = new FileOutputStream(newDay);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-                os.flush();
-                os.close();
-            } catch (IOException e) {
-                filePath = "";
-            }
-
-            // 添加记录到数据库
-            DayProvider dayProvider = new DayProvider(this);
-            ContentValues values = new ContentValues();
-            values.put(RecordAndDayContract.DayEntry.COLUMN_IMG, pictureName);
-            values.put(RecordAndDayContract.DayEntry.COLUMN_DATE, new Date().getTime());
-            dayProvider.insert(Uri.withAppendedPath(RecordAndDayContract.BASE_CONTENT_URI, recordTitle), values);
-
-            Toast.makeText(this, path.getPath(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, pictureName, Toast.LENGTH_SHORT).show();
+        OutputStream os = null;
+        try {
+            //完整大图
+            os = new FileOutputStream(newDay);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.flush();
+            os.close();
+            // 缩略图
+            addPicToDayDb(bitmap, pictureName);
+        } catch (IOException e) {
+            Log.e("==========", "保存文件时出错");
         }
+    }
+
+    private void addPicToDayDb(Bitmap bitmap, String pictureName) {
+        // 添加记录到数据库
+        DayProvider dayProvider = new DayProvider(this);
+        ContentValues values = new ContentValues();
+        values.put(RecordAndDayContract.DayEntry.COLUMN_IMG_PATH, pictureName);
+        values.put(RecordAndDayContract.DayEntry.COLUMN_DATE, new Date().getTime());
+        // bitmap to byte[]
+        ByteArrayOutputStream bitmapByte = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 20, bitmapByte);
+        values.put(RecordAndDayContract.DayEntry.COLUMN_IMG, bitmapByte.toByteArray());
+        dayProvider.insert(Uri.withAppendedPath(RecordAndDayContract.BASE_CONTENT_URI, recordTitle), values);
     }
 
     @SuppressLint("SimpleDateFormat")

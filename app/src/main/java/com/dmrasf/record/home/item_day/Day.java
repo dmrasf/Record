@@ -1,30 +1,37 @@
 package com.dmrasf.record.home.item_day;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 public class Day {
-    private String mTitle;
+    private String mText;
     private long mDate;
-    private int mDayImage;
+    //缩略图
+    private Bitmap mBitmap;
+    //内容 可以为空
+    private String mImagePath;
 
-    public Day(String title, int dayImage) {
-        mDayImage = dayImage;
-        mTitle = title;
-    }
-
-    public Day(String title, int dayImage, long date) {
-        mDayImage = dayImage;
-        mTitle = title;
+    public Day(String text, long date, byte[] bitmap, String imagePath) {
+        mText = text;
         mDate = date;
+        // byte[] to bitmap
+        mBitmap = BitmapFactory.decodeByteArray(bitmap, 0, bitmap.length);
+        mImagePath = imagePath;
     }
 
-    public String getTitle() {
-        return mTitle;
+    public String getText() {
+        return mText;
     }
 
-    public int getDayImage() {
-        return mDayImage;
+    public Bitmap getBitmap() {
+        return mBitmap;
     }
 
     public long getDate() {
         return mDate;
+    }
+
+    public String getImagePath() {
+        return mImagePath;
     }
 }

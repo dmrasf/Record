@@ -124,7 +124,8 @@ public class RecordProvider extends ContentProvider {
                 + RecordAndDayContract.DayEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + RecordAndDayContract.DayEntry.COLUMN_DATE + " INTEGER NOT NULL, "
                 + RecordAndDayContract.DayEntry.COLUMN_TEXT + " TEXT, "
-                + RecordAndDayContract.DayEntry.COLUMN_IMG + " TEXT NOT NULL);";
+                + RecordAndDayContract.DayEntry.COLUMN_IMG + " BLOB NOT NULL, "
+                + RecordAndDayContract.DayEntry.COLUMN_IMG_PATH + " TEXT NOT NULL);";
         Log.e("-----------", SQL_CREATE_DAY_TABLE);
         db.execSQL(SQL_CREATE_DAY_TABLE);
         return Uri.withAppendedPath(RecordAndDayContract.RecordEntry.CONTENT_URI, String.valueOf(id));

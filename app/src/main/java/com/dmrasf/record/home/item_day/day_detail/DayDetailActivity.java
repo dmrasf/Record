@@ -2,23 +2,32 @@ package com.dmrasf.record.home.item_day.day_detail;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.dmrasf.record.R;
 
+import java.io.*;
 import java.util.Objects;
 
 public class DayDetailActivity extends AppCompatActivity {
 
     private ImageView mImageView;
+    private TextView mTextView;
     private Dialog dialog;
-    private int dayImageSource;
+    private String mDayImagePath;
+    private String mText;
+    private String mRecordTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +48,19 @@ public class DayDetailActivity extends AppCompatActivity {
             }
         });
 
-        //获取具体每天的信息
+        //获取具体每天的信息  图片位置及内容
         Intent intentFromItemDay = getIntent();
-        dayImageSource = intentFromItemDay.getIntExtra("transport", 0);
+        mDayImagePath = intentFromItemDay.getStringExtra("imgPath");
+        mText = intentFromItemDay.getStringExtra("text");
+        mRecordTitle = intentFromItemDay.getStringExtra("recordTitle");
 
-        init();
+        initImgText();
 
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                dialog.show();
-                Toast.makeText(DayDetailActivity.this, String.valueOf(dayImageSource), Toast.LENGTH_SHORT).show();
+                Toast.makeText(DayDetailActivity.this, mDayImagePath, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -60,11 +71,40 @@ public class DayDetailActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void init() {
-        //根 itemDay 显示具体每一天的图片
-        mImageView = (ImageView) findViewById(R.id.day_detail_image_view);
-        mImageView.setImageResource(dayImageSource);
-//
+    private void initImgText() {
+        //根据 itemDay 显示具体每一天的图片
+        File path = getExternalFilesDir(mRecordTitle);
+        if (path == null) {
+            Log.e("==========", "DayDetail 读取文件夹路径错误");
+            return;
+        }
+        String filePath = "";
+        filePath = path.getPath() + File.separator + mDayImagePath;
+        Uri picUri = Uri.parse(filePath);
+        mImageView = findViewById(R.id.day_detail_image_view);
+        mImageView.setImageURI(picUri);
+
+        // 显示内容
+        mTextView = findViewById(R.id.day_detail_text_view);
+        mTextView.setText(mText);
+
+        // 其他方法读取图片
+//        File dayPic = new File(filePath);
+//        Bitmap bitmap = null;
+//        try {
+//            FileInputStream fs = new FileInputStream(dayPic);
+//            bitmap = BitmapFactory.decodeStream(fs);
+////            bitmap = BitmapFactory.decodeFile(filePath);
+//            fs.close();
+//        } catch (IOException e) {
+//            Log.e("==========", "DayDetail 读取图片错误！");
+//            Toast.makeText(this, "图片文件找不到", Toast.LENGTH_LONG).show();
+//        } finally {
+//            mImageView = findViewById(R.id.day_detail_image_view);
+////            mImageView.setImageBitmap(bitmap);
+//            mImageView.setImageURI(picUri);
+//        }
+
 //        dialog = new Dialog(this);
 //        View view = View.inflate(this, R.layout.activity_image, null);
 //        ImageView imageView = view.findViewById(R.id.day_detail_image_view);
