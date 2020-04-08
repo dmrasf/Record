@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import com.dmrasf.record.R;
 
 import java.io.*;
@@ -78,11 +79,22 @@ public class DayDetailActivity extends AppCompatActivity {
             Log.e("==========", "DayDetail 读取文件夹路径错误");
             return;
         }
-        String filePath = "";
-        filePath = path.getPath() + File.separator + mDayImagePath;
-        Uri picUri = Uri.parse(filePath);
+        String filePath = path.getPath() + File.separator + mDayImagePath;
+        File file = new File(filePath);
+        Uri picUri = Uri.fromFile(file);
+
         mImageView = findViewById(R.id.day_detail_image_view);
-        mImageView.setImageURI(picUri);
+
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(picUri.getPath(), opt);
+        if (opt.outHeight > 1500) {
+            opt.inSampleSize = (int) opt.outHeight / 1500;
+        }
+        opt.inJustDecodeBounds = false;
+        Bitmap bitmap = BitmapFactory.decodeFile(picUri.getPath(), opt);
+        Toast.makeText(this, picUri.getPath().toString(), Toast.LENGTH_SHORT).show();
+        mImageView.setImageBitmap(bitmap);
 
         // 显示内容
         mTextView = findViewById(R.id.day_detail_text_view);

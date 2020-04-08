@@ -2,9 +2,11 @@ package com.dmrasf.record;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -18,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private ItemRecordFragment itemRecordFragment = new ItemRecordFragment();
     private AboutMeFragment aboutMeFragment = new AboutMeFragment();
     private FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    private long mPictureName;
 
     public String recordTitle = "";
 
@@ -109,39 +113,48 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && data != null && data.getExtras() != null) {
-            ImageView textView = aboutMeFragment.getActivity().findViewById(R.id.about_text_view);
+        if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 1) {
                 Toast.makeText(this, "拍照返回", Toast.LENGTH_SHORT).show();
-                Bundle bundle = data.getExtras();
                 // 获取图片
-                Bitmap bitmap = (Bitmap) bundle.get("data");
-
-//                textView.setImageResource();
-                // 保存
+                File path = getExternalFilesDir(null);
+                String tempPath = path.getPath() + File.separator + "temp.jpg";
+                File tempFile = new File(tempPath);
+                Uri tempUri = FileProvider.getUriForFile(this, "com.dmrasf.record.fileProvider", tempFile);
+                Bitmap bitmap = UriToBitmap(tempUri);
+                // 移动文件到文件夹 并重命名
                 savePicture(bitmap);
+                bitmap.recycle();
             } else if (requestCode == 2) {
                 Toast.makeText(this, "相册返回", Toast.LENGTH_SHORT).show();
                 Uri uri = data.getData();
-                String path = uri.getPath();
-
-                textView.setImageURI(uri);
-                Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+                Bitmap bitmap = UriToBitmap(uri);
+                savePicture(bitmap);
+                bitmap.recycle();
             }
         }
     }
 
-    private void savePicture(Bitmap bitmap) {
+    private Bitmap UriToBitmap(Uri uri) {
+        ContentResolver cr = getContentResolver();
+        try {
+            return BitmapFactory.decodeStream(cr.openInputStream(uri));
+        } catch (FileNotFoundException e) {
+            Log.e("Exception", e.getMessage(), e);
+            return null;
+        }
+    }
 
+    private void savePicture(Bitmap bitmap) {
         if (bitmap == null) {
             Log.e("==========", "从相册或相机读取到的文件为空");
             return;
         }
-
         // 保存图片到实际路径
         // 获取文件路径 不存在时会创建
         File path = getExternalFilesDir(recordTitle);
         // 新建一个文件名  以日期为名字
+        mPictureName = new Date().getTime();
         String pictureName = getPictureName();
         String filePath = "";
         filePath = path.getPath() + File.separator + pictureName;
@@ -154,29 +167,46 @@ public class MainActivity extends AppCompatActivity {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
             os.flush();
             os.close();
-            // 缩略图
-            addPicToDayDb(bitmap, pictureName);
+            // 获取bitmap 缩小保存到 数据库中
+            addPicToDayDb(Uri.fromFile(newDay));
         } catch (IOException e) {
             Log.e("==========", "保存文件时出错");
         }
     }
 
-    private void addPicToDayDb(Bitmap bitmap, String pictureName) {
+    private void addPicToDayDb(Uri uri) {
+        if (uri == null) {
+            return;
+        }
+
         // 添加记录到数据库
         DayProvider dayProvider = new DayProvider(this);
         ContentValues values = new ContentValues();
-        values.put(RecordAndDayContract.DayEntry.COLUMN_IMG_PATH, pictureName);
-        values.put(RecordAndDayContract.DayEntry.COLUMN_DATE, new Date().getTime());
+        values.put(RecordAndDayContract.DayEntry.COLUMN_IMG_PATH, getPictureName());
+        values.put(RecordAndDayContract.DayEntry.COLUMN_DATE, mPictureName);
+        // 缩小
+        Bitmap bitmap = resizeBitmap(uri);
         // bitmap to byte[]
         ByteArrayOutputStream bitmapByte = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 20, bitmapByte);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 1, bitmapByte);
         values.put(RecordAndDayContract.DayEntry.COLUMN_IMG, bitmapByte.toByteArray());
         dayProvider.insert(Uri.withAppendedPath(RecordAndDayContract.BASE_CONTENT_URI, recordTitle), values);
     }
 
+    private Bitmap resizeBitmap(Uri uri) {
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(uri.getPath(), opt);
+        if (opt.outHeight > 60){
+            opt.inSampleSize = (int) opt.outHeight / 60;
+        }
+        opt.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(uri.getPath(), opt);
+    }
+
     @SuppressLint("SimpleDateFormat")
     private String getPictureName() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date().getTime()) + ".jpg";
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(mPictureName) + ".jpg";
     }
 
     public void setRecordTitle(String title) {

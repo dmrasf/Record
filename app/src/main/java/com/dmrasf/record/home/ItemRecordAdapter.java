@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -14,11 +16,13 @@ import android.view.ViewGroup;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import com.dmrasf.record.MainActivity;
 import com.dmrasf.record.R;
 import com.dmrasf.record.home.item_day.ItemDayActivity;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -119,7 +123,14 @@ public class ItemRecordAdapter extends
     }
 
     private void openCamera() {
+        File path = mActivity.getExternalFilesDir(null);
+        String tempPath = path.getPath() + File.separator + "temp.jpg";
+        File tempFile = new File(tempPath);
+        Uri tempUri = FileProvider.getUriForFile(mActivity, "com.dmrasf.record.fileProvider", tempFile);
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);// 启动系统相机
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         mActivity.startActivityForResult(intent, 1);
     }
 
