@@ -103,7 +103,7 @@ public class ItemRecordAdapter extends
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 // 确认后 先删除数据库 根据recordTitle
-                                removeRecordFromDb(position);
+                                removeRecordFromDbAndFile(position);
                                 mRecords.remove(position);
                                 // 更新 adapter
                                 notifyDataSetChanged();
@@ -118,7 +118,7 @@ public class ItemRecordAdapter extends
         });
     }
 
-    private void removeRecordFromDb(int position) {
+    private void removeRecordFromDbAndFile(int position) {
         // 获取当前标题
         String recordTitle = mRecords.get(position).getTitle();
         // 删除record表里的一行

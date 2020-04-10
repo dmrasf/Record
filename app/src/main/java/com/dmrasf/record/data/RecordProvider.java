@@ -138,8 +138,6 @@ public class RecordProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case RECORDS:
-                // 删除附带的days表
-                deleteDayTable(db, selection, selectionArgs);
                 return db.delete(RecordAndDayContract.RecordEntry.TABLE_NAME, selection, selectionArgs);
             case RECORD_ID:
                 selection = RecordAndDayContract.RecordEntry._ID + "=?";
@@ -147,21 +145,6 @@ public class RecordProvider extends ContentProvider {
                 return db.delete(RecordAndDayContract.RecordEntry.TABLE_NAME, selection, selectionArgs);
             default:
                 return 0;
-        }
-    }
-
-    private void deleteDayTable(SQLiteDatabase db, String selection, String[] selectionArgs) {
-        if (selection.equals(RecordAndDayContract.RecordEntry.COLUMN_TITLE)) {
-
-            // 询问是否删除
-
-            // 删除实际文件
-
-            for (String day_tableName : selectionArgs) {
-                String SQL_DROP_DAY_TABLE = "DROP TABLE " + day_tableName + ";";
-                Log.e("-----------", SQL_DROP_DAY_TABLE);
-                db.execSQL(SQL_DROP_DAY_TABLE);
-            }
         }
     }
 

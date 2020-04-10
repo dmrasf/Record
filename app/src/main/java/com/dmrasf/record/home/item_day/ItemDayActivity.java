@@ -1,6 +1,8 @@
 package com.dmrasf.record.home.item_day;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -13,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.dmrasf.record.MainActivity;
@@ -70,6 +73,39 @@ public class ItemDayActivity extends AppCompatActivity {
                 startActivityForResult(intent, 1);
             }
         });
+
+        final ItemDayActivity itemDayActivity = this;
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                // 弹出提示框
+                AlertDialog.Builder builder = new AlertDialog.Builder(itemDayActivity).setTitle("删除，确定吗？")
+                        .setNegativeButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (removeDayFromDbAndFile(position)){
+                                    // 更新 adapter
+                                    itemDay.remove(position);
+                                    itemRecordAdapter.notifyDataSetChanged();
+                                    Toast.makeText(itemDayActivity, "成功删除", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }).setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                builder.create().show();
+                return true;
+            }
+        });
+    }
+
+    private boolean removeDayFromDbAndFile(int position) {
+        // 删除当前图片从数据库
+
+        // 删除本地文件
+        return true;
     }
 
     private void initToolbar() {
@@ -124,7 +160,6 @@ public class ItemDayActivity extends AppCompatActivity {
             itemDay.add(new Day(text, createDate, img, imgPath));
         }
         cursor.close();
-
     }
 
 //    @Override

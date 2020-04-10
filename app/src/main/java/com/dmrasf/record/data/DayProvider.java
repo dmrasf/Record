@@ -117,7 +117,6 @@ public class DayProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case DAYS:
-                //删除实际文件
                 return db.delete(mDbHelper.Table_name, selection, selectionArgs);
             case DAYS_ID:
                 selection = RecordAndDayContract.DayEntry._ID + "=?";
