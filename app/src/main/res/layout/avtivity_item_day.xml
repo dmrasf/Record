@@ -14,6 +14,7 @@
     <ListView
             android:layout_width="match_parent"
             android:id="@+id/list_day"
+
             android:layout_height="match_parent">
 
     </ListView>

@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -42,26 +45,14 @@ public class ItemDayActivity extends AppCompatActivity {
         // 初始化toolbar
         initToolbar();
 
-        // 获取上一级的信息 哪个record
+        // 获取上一级的信息 哪个record 存到私有变量里
         getIntentFromRecord();
 
         Toast.makeText(this, "ItemDayActivity" + mRecordTitle, Toast.LENGTH_SHORT).show();
 
         final ArrayList<Day> itemDay = new ArrayList<>();
 
-        DayProvider dayProvider = new DayProvider(this, mRecordTitle);
-        Cursor cursor = dayProvider.query(Uri.withAppendedPath(RecordAndDayContract.BASE_CONTENT_URI, mRecordTitle), projection,
-                null, null, null);
-        for (int i = 0; i < cursor.getCount(); i++) {
-            cursor.moveToPosition(i);
-            //分别读取 内容 时间 图片路径  图片缩略图
-            String text = cursor.getString(cursor.getColumnIndex(RecordAndDayContract.DayEntry.COLUMN_TEXT));
-            long createDate = cursor.getLong(cursor.getColumnIndex(RecordAndDayContract.DayEntry.COLUMN_DATE));
-            String imgPath = cursor.getString(cursor.getColumnIndex(RecordAndDayContract.DayEntry.COLUMN_IMG_PATH));
-            byte[] img = cursor.getBlob(cursor.getColumnIndex(RecordAndDayContract.DayEntry.COLUMN_IMG));
-            itemDay.add(new Day(text, createDate, img, imgPath));
-        }
-        cursor.close();
+        getDayFromDb(itemDay);
 
         final ItemDayAdapter itemRecordAdapter =
                 new ItemDayAdapter(this, itemDay);
@@ -92,12 +83,50 @@ public class ItemDayActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.play) {
+                    playRecord();
+                }
+                return true;
+            }
+        });
+    }
+
+
+    private void playRecord() {
     }
 
     private void getIntentFromRecord() {
         Intent intentFromItemRecord = getIntent();
         mRecordTitle = intentFromItemRecord.getStringExtra("transport");
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.item_day_menu, menu);
+        return true;
+    }
+
+    private void getDayFromDb(ArrayList<Day> itemDay) {
+        DayProvider dayProvider = new DayProvider(this, mRecordTitle);
+        Cursor cursor = dayProvider.query(Uri.withAppendedPath(RecordAndDayContract.BASE_CONTENT_URI, mRecordTitle), projection,
+                null, null, null);
+        for (int i = 0; i < cursor.getCount(); i++) {
+            cursor.moveToPosition(i);
+            //分别读取 内容 时间 图片路径  图片缩略图
+            String text = cursor.getString(cursor.getColumnIndex(RecordAndDayContract.DayEntry.COLUMN_TEXT));
+            long createDate = cursor.getLong(cursor.getColumnIndex(RecordAndDayContract.DayEntry.COLUMN_DATE));
+            String imgPath = cursor.getString(cursor.getColumnIndex(RecordAndDayContract.DayEntry.COLUMN_IMG_PATH));
+            byte[] img = cursor.getBlob(cursor.getColumnIndex(RecordAndDayContract.DayEntry.COLUMN_IMG));
+            itemDay.add(new Day(text, createDate, img, imgPath));
+        }
+        cursor.close();
+
+    }
+
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);

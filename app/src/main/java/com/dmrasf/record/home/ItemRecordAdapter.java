@@ -2,6 +2,7 @@ package com.dmrasf.record.home;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,7 +26,7 @@ import com.dmrasf.record.home.item_day.ItemDayActivity;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
+import java.util.Objects;
 
 
 // 每个record的操作  侧滑删除  按钮添加 ...
@@ -38,18 +39,18 @@ public class ItemRecordAdapter extends
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public final View view;
-//        public final ImageView imageView;
         public final TextView textView;
         public final TextView dateTextView;
-        public final Button button;
+        public final Button addButton;
+        public final Button removeButton;
 
         public ViewHolder(View v) {
             super(v);
             view = v;
-//            imageView = v.findViewById(R.id.item_record_image_view);
             textView = v.findViewById(R.id.item_record_text_view);
             dateTextView = v.findViewById(R.id.item_record_date_text_view);
-            button = v.findViewById(R.id.item_record_button);
+            addButton = v.findViewById(R.id.item_record_add_button);
+            removeButton = v.findViewById(R.id.item_record_remove_button);
         }
     }
 
@@ -84,7 +85,7 @@ public class ItemRecordAdapter extends
             }
         });
 
-        holder.button.setOnClickListener(new View.OnClickListener() {
+        holder.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(mActivity, "button" + holder.textView.getText(), Toast.LENGTH_SHORT).show();
@@ -92,10 +93,40 @@ public class ItemRecordAdapter extends
 
             }
         });
+
+        holder.removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 弹出提示框
+                AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(mActivity)).setTitle("会把记录里照片啥的都删除，确定吗？")
+                        .setNegativeButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // 确认后 先删除数据库 根据recordTitle
+                                removeRecordFromDb(position);
+                                mRecords.remove(position);
+                                // 更新 adapter
+                                notifyDataSetChanged();
+                            }
+                        }).setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                builder.create().show();
+            }
+        });
     }
 
-    public void onItemRemove(int position) {
-        mRecords.remove(position);
+    private void removeRecordFromDb(int position) {
+        // 获取当前标题
+        String recordTitle = mRecords.get(position).getTitle();
+        // 删除record表里的一行
+
+        // 删除day 整个表
+
+        // 删除真实文件
+
     }
 
     //选择照相机 相册

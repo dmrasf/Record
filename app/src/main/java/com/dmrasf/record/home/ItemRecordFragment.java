@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.dmrasf.record.MainActivity;
@@ -59,8 +60,6 @@ public class ItemRecordFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_item_record, container, false);
 
-        Toast.makeText(getActivity(), "ItemRecordFragment 里的 onCreateView", Toast.LENGTH_SHORT).show();
-
         Log.e("==========", "onCreateView ItemRecordFragment");
 
         initToolbar();
@@ -74,8 +73,9 @@ public class ItemRecordFragment extends Fragment {
         itemRecordAdapter = new ItemRecordAdapter(getActivity(), itemRecords);
         recyclerView.setAdapter(itemRecordAdapter);
 
-//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemRecordTouchCallback(itemRecordAdapter));
-//        itemTouchHelper.attachToRecyclerView(recyclerView);
+        //侧滑删除
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemRecordTouchCallback(itemRecordAdapter));
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         return rootView;
     }
