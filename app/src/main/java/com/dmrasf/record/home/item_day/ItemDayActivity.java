@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -79,6 +80,10 @@ public class ItemDayActivity extends AppCompatActivity {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                Vibrator vibrator = (Vibrator) itemDayActivity.getSystemService(VIBRATOR_SERVICE);
+                if (vibrator != null){
+                    vibrator.vibrate(50);
+                }
                 // 弹出提示框
                 AlertDialog.Builder builder = new AlertDialog.Builder(itemDayActivity).setTitle("删除，确定吗？")
                         .setNegativeButton("确认", new DialogInterface.OnClickListener() {
