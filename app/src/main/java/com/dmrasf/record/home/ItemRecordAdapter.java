@@ -84,7 +84,8 @@ public class ItemRecordAdapter extends
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ItemDayActivity.class);
                 // 具体的每个record的信息  需要根据她来从文件中提取信息
-                intent.putExtra("transport", holder.textView.getText());
+                intent.putExtra("title", currentRecord.getTitle());
+                intent.putExtra("createDate", "_" + String.valueOf(currentRecord.getDate()));
                 v.getContext().startActivity(intent);
             }
         });
@@ -93,7 +94,7 @@ public class ItemRecordAdapter extends
             @Override
             public void onClick(View v) {
                 Toast.makeText(mActivity, "button" + holder.textView.getText(), Toast.LENGTH_SHORT).show();
-                showList(currentRecord.getTitle());
+                showList(currentRecord.getTitle(), currentRecord.getDate());
 
             }
         });
@@ -125,8 +126,10 @@ public class ItemRecordAdapter extends
     private void removeRecordFromDbAndFile(int position) {
         // 获取当前标题
         String recordTitle = mRecords.get(position).getTitle();
+        // day表
+        String dayTableName = "_" + String.valueOf(mRecords.get(position).getDate());
         // 删除真实文件
-        File dir = mActivity.getExternalFilesDir(recordTitle);
+        File dir = mActivity.getExternalFilesDir(dayTableName);
         if (dir == null || !dir.exists() || !dir.isDirectory()) {
             Toast.makeText(mActivity, "删除失败", Toast.LENGTH_SHORT).show();
             return;
@@ -141,7 +144,7 @@ public class ItemRecordAdapter extends
             RecordProvider recordProvider = new RecordProvider(mActivity);
             recordProvider.delete(RecordAndDayContract.RecordEntry.CONTENT_URI, RecordAndDayContract.RecordEntry.COLUMN_TITLE + "=?", new String[]{recordTitle});
             // 删除day 整个表
-            DayProvider dayProvider = new DayProvider(mActivity, recordTitle);
+            DayProvider dayProvider = new DayProvider(mActivity, dayTableName);
             dayProvider.deleteTable();
         }
         // 删除文件夹
@@ -149,14 +152,14 @@ public class ItemRecordAdapter extends
     }
 
     //选择照相机 相册
-    private void showList(final String recordTitle) {
+    private void showList(final String recordTitle, final long createDate) {
         final String[] items = {"相机", "相册"};
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity)
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(mActivity, "你点击的内容为： " + items[i], Toast.LENGTH_LONG).show();
-                        mActivity.setRecordTitle(recordTitle);
+                        mActivity.setRecordTitle(recordTitle, createDate);
                         if (i == 0) {
                             openCamera();
                         } else {

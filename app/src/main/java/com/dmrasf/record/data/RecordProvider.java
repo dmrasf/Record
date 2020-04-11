@@ -95,6 +95,8 @@ public class RecordProvider extends ContentProvider {
 
     private Uri insertRecord(Uri uri, ContentValues values) {
         String name = values.getAsString(RecordAndDayContract.RecordEntry.COLUMN_TITLE);
+        // 使用创建日期作为表名可以避免语法错误
+        long createTime = values.getAsLong(RecordAndDayContract.RecordEntry.COLUMN_DATE);
         // 判断Record名是否为空
         if (name.isEmpty()) {
             Toast.makeText(getContext(), "不能为空", Toast.LENGTH_SHORT).show();
@@ -120,7 +122,8 @@ public class RecordProvider extends ContentProvider {
             return null;
         }
         // 新建day
-        String SQL_CREATE_DAY_TABLE = "CREATE TABLE " + name + "("
+        String dayName = "_" + String.valueOf(createTime);
+        String SQL_CREATE_DAY_TABLE = "CREATE TABLE " + dayName + "("
                 + RecordAndDayContract.DayEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + RecordAndDayContract.DayEntry.COLUMN_DATE + " INTEGER NOT NULL, "
                 + RecordAndDayContract.DayEntry.COLUMN_TEXT + " TEXT, "

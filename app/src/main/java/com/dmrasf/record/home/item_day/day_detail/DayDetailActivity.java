@@ -29,7 +29,7 @@ public class DayDetailActivity extends AppCompatActivity {
     private Dialog dialog;
     private String mDayImagePath;
     private String mText;
-    private String mRecordTitle;
+    private String mDayTableName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class DayDetailActivity extends AppCompatActivity {
         Intent intentFromItemDay = getIntent();
         mDayImagePath = intentFromItemDay.getStringExtra("imgPath");
         mText = intentFromItemDay.getStringExtra("text");
-        mRecordTitle = intentFromItemDay.getStringExtra("recordTitle");
+        mDayTableName = intentFromItemDay.getStringExtra("dayTableName");
 
         initImgText();
 
@@ -79,7 +79,7 @@ public class DayDetailActivity extends AppCompatActivity {
 
     private void initImgText() {
         //根据 itemDay 显示具体每一天的图片
-        File path = getExternalFilesDir(mRecordTitle);
+        File path = getExternalFilesDir(mDayTableName);
         if (path == null) {
             Log.e("==========", "DayDetail 读取文件夹路径错误");
             return;

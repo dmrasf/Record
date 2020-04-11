@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private long mPictureName;
 
     public String recordTitle = "";
+    public String DayTableName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         }
         // 保存图片到实际路径
         // 获取文件路径 不存在时会创建
-        File path = getExternalFilesDir(recordTitle);
+        File path = getExternalFilesDir(DayTableName);
         // 新建一个文件名  以日期为名字
         mPictureName = new Date().getTime();
         String pictureName = getPictureName();
@@ -190,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         ByteArrayOutputStream bitmapByte = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 1, bitmapByte);
         values.put(RecordAndDayContract.DayEntry.COLUMN_IMG, bitmapByte.toByteArray());
-        dayProvider.insert(Uri.withAppendedPath(RecordAndDayContract.BASE_CONTENT_URI, recordTitle), values);
+        dayProvider.insert(Uri.withAppendedPath(RecordAndDayContract.BASE_CONTENT_URI, DayTableName), values);
     }
 
     private Bitmap resizeBitmap(Uri uri) {
@@ -209,7 +210,8 @@ public class MainActivity extends AppCompatActivity {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(mPictureName) + ".jpg";
     }
 
-    public void setRecordTitle(String title) {
+    public void setRecordTitle(String title, long createTime) {
         recordTitle = title;
+        DayTableName = "_" + String.valueOf(createTime);
     }
 }

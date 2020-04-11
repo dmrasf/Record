@@ -32,13 +32,13 @@ public class DayProvider extends ContentProvider {
     }
 
     public DayProvider(Context context) {
-        mDbHelper = new DayDbHelper(context, ((MainActivity) context).recordTitle);
+        mDbHelper = new DayDbHelper(context, ((MainActivity) context).DayTableName);
         sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, mDbHelper.Table_name, DAYS);
         sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, mDbHelper.Table_name + "/#", DAYS_ID);
     }
 
-    public DayProvider(Context context, String recordTitle) {
-        mDbHelper = new DayDbHelper(context, recordTitle);
+    public DayProvider(Context context, String dayTableName) {
+        mDbHelper = new DayDbHelper(context, dayTableName);
         sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, mDbHelper.Table_name, DAYS);
         sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, mDbHelper.Table_name + "/#", DAYS_ID);
     }

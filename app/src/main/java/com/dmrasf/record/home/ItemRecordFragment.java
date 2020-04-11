@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,7 @@ import com.dmrasf.record.R;
 import com.dmrasf.record.data.RecordAndDayContract;
 import com.dmrasf.record.data.RecordProvider;
 
+import java.sql.SQLData;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
@@ -122,6 +124,7 @@ public class ItemRecordFragment extends Fragment {
                 .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        String title = editText.getText().toString();
                         //用 ContentValues类 向数据库添加数据 并更新adapter
                         insertNewRecordToDb(editText.getText().toString());
                         updateItemRecordsFromDb(itemRecords);

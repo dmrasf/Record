@@ -39,6 +39,7 @@ public class ItemDayActivity extends AppCompatActivity {
     };
 
     private String mRecordTitle;
+    private String mDayTableName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +52,7 @@ public class ItemDayActivity extends AppCompatActivity {
         // 获取上一级的信息 哪个record 存到私有变量里
         getIntentFromRecord();
 
-        Toast.makeText(this, "ItemDayActivity" + mRecordTitle, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "ItemDayActivity " + mDayTableName + " " + mRecordTitle, Toast.LENGTH_SHORT).show();
 
         final ArrayList<Day> itemDay = new ArrayList<>();
 
@@ -69,7 +70,7 @@ public class ItemDayActivity extends AppCompatActivity {
                 // 传过去 文件地址  显示大图
                 intent.putExtra("imgPath", itemDay.get(position).getImagePath());
                 intent.putExtra("text", itemDay.get(position).getText());
-                intent.putExtra("recordTitle", mRecordTitle);
+                intent.putExtra("dayTableName", mDayTableName);
                 startActivityForResult(intent, 1);
             }
         });
@@ -137,7 +138,8 @@ public class ItemDayActivity extends AppCompatActivity {
 
     private void getIntentFromRecord() {
         Intent intentFromItemRecord = getIntent();
-        mRecordTitle = intentFromItemRecord.getStringExtra("transport");
+        mRecordTitle = intentFromItemRecord.getStringExtra("title");
+        mDayTableName = intentFromItemRecord.getStringExtra("createDate");
     }
 
     @Override
@@ -147,8 +149,8 @@ public class ItemDayActivity extends AppCompatActivity {
     }
 
     private void getDayFromDb(ArrayList<Day> itemDay) {
-        DayProvider dayProvider = new DayProvider(this, mRecordTitle);
-        Cursor cursor = dayProvider.query(Uri.withAppendedPath(RecordAndDayContract.BASE_CONTENT_URI, mRecordTitle), projection,
+        DayProvider dayProvider = new DayProvider(this, mDayTableName);
+        Cursor cursor = dayProvider.query(Uri.withAppendedPath(RecordAndDayContract.BASE_CONTENT_URI, mDayTableName), projection,
                 null, null, null);
         for (int i = 0; i < cursor.getCount(); i++) {
             cursor.moveToPosition(i);
