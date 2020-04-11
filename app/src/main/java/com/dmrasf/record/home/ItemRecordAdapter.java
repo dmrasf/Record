@@ -21,11 +21,15 @@ import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import com.dmrasf.record.MainActivity;
 import com.dmrasf.record.R;
+import com.dmrasf.record.data.DayProvider;
+import com.dmrasf.record.data.RecordAndDayContract;
+import com.dmrasf.record.data.RecordProvider;
 import com.dmrasf.record.home.item_day.ItemDayActivity;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 
@@ -121,12 +125,27 @@ public class ItemRecordAdapter extends
     private void removeRecordFromDbAndFile(int position) {
         // 获取当前标题
         String recordTitle = mRecords.get(position).getTitle();
-        // 删除record表里的一行
-
-        // 删除day 整个表
-
         // 删除真实文件
-
+        File dir = mActivity.getExternalFilesDir(recordTitle);
+        if (dir == null || !dir.exists() || !dir.isDirectory()) {
+            Toast.makeText(mActivity, "删除失败", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (dir.listFiles() != null) {
+            for (File img : dir.listFiles()) {
+                if (img.isFile()) {
+                    img.delete();
+                }
+            }
+            // 删除record表里的一行
+            RecordProvider recordProvider = new RecordProvider(mActivity);
+            recordProvider.delete(RecordAndDayContract.RecordEntry.CONTENT_URI, RecordAndDayContract.RecordEntry.COLUMN_TITLE + "=?", new String[]{recordTitle});
+            // 删除day 整个表
+            DayProvider dayProvider = new DayProvider(mActivity, recordTitle);
+            dayProvider.deleteTable();
+        }
+        // 删除文件夹
+        dir.delete();
     }
 
     //选择照相机 相册

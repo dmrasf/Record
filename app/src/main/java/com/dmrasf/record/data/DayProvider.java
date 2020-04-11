@@ -127,6 +127,15 @@ public class DayProvider extends ContentProvider {
         }
     }
 
+    public int deleteTable() {
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        String SQL_DELETE_DAY_TABLE = "DROP TABLE " + mDbHelper.Table_name + ";";
+        db.execSQL(SQL_DELETE_DAY_TABLE);
+
+        return 0;
+    }
+
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         return 0;
