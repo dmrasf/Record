@@ -6,6 +6,6 @@
             android:id="@+id/share"
             android:icon="@drawable/tubiao_1"
             app:showAsAction="always"
-            android:title="share"/>
+            android:title="@string/share"/>
 
 </menu>

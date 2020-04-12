@@ -2,4 +2,17 @@
     <string name="app_name">Record</string>
     <string name="drawer_open">drawer open</string>
     <string name="drawer_close">drawer close</string>
+    <string name="home">Home</string>
+    <string name="aboutMe">AboutMe</string>
+    <string name="takeATitle">Take a title</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="camera">Camera</string>
+    <string name="album">Album</string>
+    <string name="share">Share</string>
+    <string name="play">Play</string>
+    <string name="add">Add</string>
+    <string name="deleteConfirmation">Will delete all photos, are you sure?</string>
+    <string name="deleteFail">Failed to delete!</string>
+    <string name="deleteSuccessfully">Successfully deleted</string>
 </resources>

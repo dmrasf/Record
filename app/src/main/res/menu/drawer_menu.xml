@@ -2,15 +2,5 @@
 <menu
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-            android:id="@+id/action_add_new"
-            android:icon="@drawable/add"
-            app:showAsAction="ifRoom"
-            android:title="add"/>
-
-    <item
-            android:id="@+id/action_settings"
-            android:title="all"
-            app:showAsAction="never"/>
 
 </menu>

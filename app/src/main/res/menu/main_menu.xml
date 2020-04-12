@@ -6,11 +6,11 @@
             android:id="@+id/action_add_new"
             android:icon="@drawable/add"
             app:showAsAction="ifRoom"
-            android:title="add"/>
+            android:title="@string/add"/>
 
     <item
             android:id="@+id/action_settings"
-            android:title="all"
+            android:title="@string/share"
             app:showAsAction="never"/>
 
 </menu>

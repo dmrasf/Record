@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">记录</string>
+    <string name="home">家</string>
+    <string name="aboutMe">关于</string>
+    <string name="takeATitle">取个标题</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确认</string>
+    <string name="camera">相机</string>
+    <string name="album">相册</string>
+    <string name="share">分享</string>
+    <string name="play">播放</string>
+    <string name="add">添加</string>
+    <string name="drawer_open">侧边栏打开</string>
+    <string name="drawer_close">侧边栏关闭</string>
+    <string name="deleteConfirmation">会把记录里照片啥的都删除，确定吗？</string>
+    <string name="deleteFail">删除失败</string>
+    <string name="deleteSuccessfully">删除成功</string>
+</resources>

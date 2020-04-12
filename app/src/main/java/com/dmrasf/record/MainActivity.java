@@ -116,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == 1) {
-                Toast.makeText(this, "拍照返回", Toast.LENGTH_SHORT).show();
                 // 获取图片
                 File path = getExternalFilesDir(null);
                 String tempPath = path.getPath() + File.separator + "temp.jpg";
@@ -127,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
                 savePicture(bitmap);
                 bitmap.recycle();
             } else if (requestCode == 2) {
-                Toast.makeText(this, "相册返回", Toast.LENGTH_SHORT).show();
                 Uri uri = data.getData();
                 Bitmap bitmap = UriToBitmap(uri);
                 savePicture(bitmap);

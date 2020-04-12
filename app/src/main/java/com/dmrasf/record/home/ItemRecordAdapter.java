@@ -93,7 +93,6 @@ public class ItemRecordAdapter extends
         holder.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mActivity, "button" + holder.textView.getText(), Toast.LENGTH_SHORT).show();
                 showList(currentRecord.getTitle(), currentRecord.getDate());
 
             }
@@ -103,8 +102,8 @@ public class ItemRecordAdapter extends
             @Override
             public void onClick(View v) {
                 // 弹出提示框
-                AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(mActivity)).setTitle("会把记录里照片啥的都删除，确定吗？")
-                        .setNegativeButton("确认", new DialogInterface.OnClickListener() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(mActivity)).setTitle(R.string.deleteConfirmation)
+                        .setNegativeButton(R.string.confirm, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 // 确认后 先删除数据库 根据recordTitle
@@ -113,7 +112,7 @@ public class ItemRecordAdapter extends
                                 // 更新 adapter
                                 notifyDataSetChanged();
                             }
-                        }).setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                        }).setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                             }
@@ -131,7 +130,7 @@ public class ItemRecordAdapter extends
         // 删除真实文件
         File dir = mActivity.getExternalFilesDir(dayTableName);
         if (dir == null || !dir.exists() || !dir.isDirectory()) {
-            Toast.makeText(mActivity, "删除失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mActivity, R.string.deleteFail, Toast.LENGTH_SHORT).show();
             return;
         }
         if (dir.listFiles() != null) {
@@ -153,19 +152,17 @@ public class ItemRecordAdapter extends
 
     //选择照相机 相册
     private void showList(final String recordTitle, final long createDate) {
-        final String[] items = {"相机", "相册"};
+        final String[] items = {mActivity.getString(R.string.camera), mActivity.getString(R.string.album)};
         AlertDialog.Builder builder = new AlertDialog.Builder(mActivity)
                 .setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(mActivity, "你点击的内容为： " + items[i], Toast.LENGTH_LONG).show();
                         mActivity.setRecordTitle(recordTitle, createDate);
                         if (i == 0) {
                             openCamera();
                         } else {
                             openPicture();
                         }
-                        // 选择图片后进入写模式
                     }
                 });
         builder.create().show();

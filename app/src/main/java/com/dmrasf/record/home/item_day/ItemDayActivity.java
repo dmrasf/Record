@@ -85,18 +85,18 @@ public class ItemDayActivity extends AppCompatActivity {
                     vibrator.vibrate(50);
                 }
                 // 弹出提示框
-                AlertDialog.Builder builder = new AlertDialog.Builder(itemDayActivity).setTitle("删除，确定吗？")
-                        .setNegativeButton("确认", new DialogInterface.OnClickListener() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(itemDayActivity).setTitle(R.string.deleteConfirmation)
+                        .setNegativeButton(R.string.confirm, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if (removeDayFromDbAndFile(position)){
                                     // 更新 adapter
                                     itemDay.remove(position);
                                     itemRecordAdapter.notifyDataSetChanged();
-                                    Toast.makeText(itemDayActivity, "成功删除", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(itemDayActivity, R.string.deleteSuccessfully, Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        }).setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                        }).setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                             }

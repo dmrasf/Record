@@ -120,8 +120,8 @@ public class ItemRecordFragment extends Fragment {
     //新建一个record 并存到数据库中 同时更新 itemRecordAdapter
     private void addNewRecord() {
         final EditText editText = new EditText(getContext());
-        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext())).setTitle("取个标题：").setView(editText)
-                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getContext())).setTitle(R.string.takeATitle).setView(editText)
+                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String title = editText.getText().toString();
@@ -131,7 +131,7 @@ public class ItemRecordFragment extends Fragment {
                         //刷新界面
                         itemRecordAdapter.notifyDataSetChanged();
                     }
-                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }

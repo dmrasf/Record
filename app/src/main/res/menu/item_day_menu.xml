@@ -6,6 +6,6 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         android:id="@+id/play"
         android:icon="@drawable/tubiao"
         app:showAsAction="always"
-        android:title="play"/>
+        android:title="@string/play"/>
 
 </menu>
