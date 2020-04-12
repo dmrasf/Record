@@ -23,9 +23,11 @@ import com.dmrasf.record.MainActivity;
 import com.dmrasf.record.R;
 import com.dmrasf.record.data.DayProvider;
 import com.dmrasf.record.data.RecordAndDayContract;
+import com.dmrasf.record.data.RecordProvider;
 import com.dmrasf.record.home.Record;
 import com.dmrasf.record.home.item_day.day_detail.DayDetailActivity;
 
+import java.io.File;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Date;
@@ -85,15 +87,17 @@ public class ItemDayActivity extends AppCompatActivity {
                     vibrator.vibrate(50);
                 }
                 // 弹出提示框
-                AlertDialog.Builder builder = new AlertDialog.Builder(itemDayActivity).setTitle(R.string.deleteConfirmation)
+                AlertDialog.Builder builder = new AlertDialog.Builder(itemDayActivity).setTitle(R.string.deleteConfirmation2)
                         .setNegativeButton(R.string.confirm, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                if (removeDayFromDbAndFile(position)){
+                                if (removeDayFromDbAndFile(itemDay.get(position).getImagePath())){
                                     // 更新 adapter
                                     itemDay.remove(position);
                                     itemRecordAdapter.notifyDataSetChanged();
                                     Toast.makeText(itemDayActivity, R.string.deleteSuccessfully, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(itemDayActivity, R.string.deleteFail, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }).setPositiveButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -107,11 +111,23 @@ public class ItemDayActivity extends AppCompatActivity {
         });
     }
 
-    private boolean removeDayFromDbAndFile(int position) {
-        // 删除当前图片从数据库
-
-        // 删除本地文件
-        return true;
+    private boolean removeDayFromDbAndFile(String imgPath) {
+        File dir = this.getExternalFilesDir(mDayTableName);
+        if (dir == null || !dir.exists() || !dir.isDirectory()) {
+            return false;
+        }
+        // 新建一个文件名  以日期为名字
+        String filePath = "";
+        filePath = dir.getPath() + File.separator + imgPath;
+        File Day = new File(filePath);
+        if (Day.delete()) {
+            // 删除 day 里的一行
+            DayProvider dayProvider = new DayProvider(this, mDayTableName);
+            dayProvider.delete(Uri.withAppendedPath(RecordAndDayContract.BASE_CONTENT_URI, mDayTableName),
+                    RecordAndDayContract.DayEntry.COLUMN_IMG_PATH + "=?", new String[]{imgPath});
+            return true;
+        }
+        return false;
     }
 
     private void initToolbar() {

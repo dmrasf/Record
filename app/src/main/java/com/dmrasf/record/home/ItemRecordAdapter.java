@@ -141,7 +141,8 @@ public class ItemRecordAdapter extends
             }
             // 删除record表里的一行
             RecordProvider recordProvider = new RecordProvider(mActivity);
-            recordProvider.delete(RecordAndDayContract.RecordEntry.CONTENT_URI, RecordAndDayContract.RecordEntry.COLUMN_TITLE + "=?", new String[]{recordTitle});
+            recordProvider.delete(RecordAndDayContract.RecordEntry.CONTENT_URI,
+                    RecordAndDayContract.RecordEntry.COLUMN_TITLE + "=?", new String[]{recordTitle});
             // 删除day 整个表
             DayProvider dayProvider = new DayProvider(mActivity, dayTableName);
             dayProvider.deleteTable();

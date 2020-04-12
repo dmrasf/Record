@@ -13,6 +13,7 @@
     <string name="play">Play</string>
     <string name="add">Add</string>
     <string name="deleteConfirmation">Will delete all photos, are you sure?</string>
+    <string name="deleteConfirmation2">Are you sure?</string>
     <string name="deleteFail">Failed to delete!</string>
     <string name="deleteSuccessfully">Successfully deleted</string>
 </resources>

@@ -16,4 +16,5 @@
     <string name="deleteConfirmation">会把记录里照片啥的都删除，确定吗？</string>
     <string name="deleteFail">删除失败</string>
     <string name="deleteSuccessfully">删除成功</string>
+    <string name="deleteConfirmation2">确定删除吗？</string>
 </resources>
