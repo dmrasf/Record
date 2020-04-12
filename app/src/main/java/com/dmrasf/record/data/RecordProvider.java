@@ -24,14 +24,15 @@ public class RecordProvider extends ContentProvider {
 //    }
 
     private RecordDbHelper mDbHelper;
+    private Context mContext;
 
     @Override
     public boolean onCreate() {
-//        mDbHelper = new RecordDbHelper(getContext());
         return true;
     }
 
     public RecordProvider(Context context) {
+        mContext = context;
         mDbHelper = new RecordDbHelper(context);
         sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, RecordAndDayContract.PATH_RECORDS, RECORDS);
         sUriMatcher.addURI(RecordAndDayContract.CONTENT_AUTHORITY, RecordAndDayContract.PATH_RECORDS + "/#", RECORD_ID);
@@ -99,7 +100,7 @@ public class RecordProvider extends ContentProvider {
         long createTime = values.getAsLong(RecordAndDayContract.RecordEntry.COLUMN_DATE);
         // 判断Record名是否为空
         if (name.isEmpty()) {
-            Toast.makeText(getContext(), "不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "不能为空", Toast.LENGTH_SHORT).show();
             return null;
         }
         // 判断Record 是否已经存在
@@ -109,7 +110,7 @@ public class RecordProvider extends ContentProvider {
         Cursor cursor = query(RecordAndDayContract.RecordEntry.CONTENT_URI, projection,
                 RecordAndDayContract.RecordEntry.COLUMN_TITLE + "=?", new String[]{name}, null);
         if (cursor.getCount() != 0) {
-            Toast.makeText(getContext(), "该Record已存在", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "该Record已存在", Toast.LENGTH_SHORT).show();
             cursor.close();
             return null;
         }

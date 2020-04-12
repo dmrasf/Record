@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         opt.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(uri.getPath(), opt);
         if (opt.outHeight > 60){
-            opt.inSampleSize = (int) opt.outHeight / 60;
+            opt.inSampleSize = (int) opt.outHeight / 100;
         }
         opt.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(uri.getPath(), opt);
