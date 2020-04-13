@@ -101,6 +101,9 @@ public class ItemRecordAdapter extends
         holder.removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 复位
+                holder.itemView.scrollTo(0, 0);
+
                 // 弹出提示框
                 AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(mActivity)).setTitle(R.string.deleteConfirmation)
                         .setNegativeButton(R.string.confirm, new DialogInterface.OnClickListener() {

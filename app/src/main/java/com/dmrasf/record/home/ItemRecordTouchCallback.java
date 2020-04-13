@@ -1,6 +1,9 @@
 package com.dmrasf.record.home;
 
+import android.content.Context;
 import android.graphics.Canvas;
+import android.util.Log;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,9 +16,11 @@ public class ItemRecordTouchCallback extends ItemTouchHelper.Callback {
     private int mCurrentScrollXWhenInactive;
     private float mInitXWhenInactive;
     private boolean mFirstInactive;
+    private Context mContext;
 
-    public ItemRecordTouchCallback(ItemRecordAdapter itemRecordAdapter) {
+    public ItemRecordTouchCallback(ItemRecordAdapter itemRecordAdapter, Context context) {
         mItemRecordAdapter = itemRecordAdapter;
+        mContext = context;
     }
 
     @Override
@@ -42,7 +47,11 @@ public class ItemRecordTouchCallback extends ItemTouchHelper.Callback {
     @Override
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
-        int mDefaultScrollX  = 100;
+        // dp to dpi
+        final float scale =  mContext.getResources().getDisplayMetrics().density;
+        int mDefaultScrollX  = Math.abs((int) (70 * scale + 0.5f));
+
+        Log.e("==============", String.valueOf(dX) + "   " + isCurrentlyActive);
 
         // 首次滑动时，记录下ItemView当前滑动的距离
         if (dX == 0) {
@@ -66,6 +75,7 @@ public class ItemRecordTouchCallback extends ItemTouchHelper.Callback {
                 viewHolder.itemView.scrollTo((int) (mCurrentScrollXWhenInactive * dX / mInitXWhenInactive), 0);
             }
         }
+
     }
 
     @Override

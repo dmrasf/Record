@@ -76,7 +76,7 @@ public class ItemRecordFragment extends Fragment {
         recyclerView.setAdapter(itemRecordAdapter);
 
         //侧滑删除
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemRecordTouchCallback(itemRecordAdapter));
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemRecordTouchCallback(itemRecordAdapter, getContext()));
         itemTouchHelper.attachToRecyclerView(recyclerView);
 
         return rootView;

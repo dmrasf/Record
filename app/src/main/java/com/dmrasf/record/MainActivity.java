@@ -123,23 +123,6 @@ public class MainActivity extends AppCompatActivity {
             SaveBitmapAsyncTask saveBitmapAsyncTask = new SaveBitmapAsyncTask();
             saveBitmapAsyncTask.execute(uri);
 
-            TextView textViewCancel = (TextView) findViewById(R.id.dialog_cancel);
-            TextView textViewConfirm = (TextView) findViewById(R.id.dialog_confirm);
-            final EditText editText = (EditText) findViewById(R.id.dialog_edit);
-            final String[] text = {""};
-
-            TextDialog.Builder builder = new TextDialog.Builder(this);
-//            .set(textViewCancel, textViewConfirm)
-//                    .setTextConfirm(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    text[0] = editText.getText().toString();
-//                }
-//            });
-            builder.create().show();
-
-            Toast.makeText(this, text[0], Toast.LENGTH_SHORT).show();
-
         }
     }
 
