@@ -8,33 +8,26 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.RecyclerView;
 import com.dmrasf.record.aboutme.AboutMeFragment;
-import com.dmrasf.record.data.DayDbHelper;
 import com.dmrasf.record.data.DayProvider;
 import com.dmrasf.record.data.RecordAndDayContract;
 import com.dmrasf.record.home.ItemRecordFragment;
+import com.dmrasf.record.home.TextDialog;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -48,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private ItemRecordFragment itemRecordFragment = new ItemRecordFragment();
     private AboutMeFragment aboutMeFragment = new AboutMeFragment();
     private FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    private MainActivity mainActivity = this;
     private long mPictureName;
 
     public String recordTitle = "";
@@ -115,36 +109,67 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
+            Uri uri = null;
+            // 可能需要放到后台
             if (requestCode == 1) {
                 // 获取图片
                 File path = getExternalFilesDir(null);
                 String tempPath = path.getPath() + File.separator + "temp.jpg";
                 File tempFile = new File(tempPath);
-                Uri tempUri = FileProvider.getUriForFile(this, "com.dmrasf.record.fileProvider", tempFile);
-                Bitmap bitmap = UriToBitmap(tempUri);
-                // 移动文件到文件夹 并重命名
-                savePicture(bitmap);
-                bitmap.recycle();
+                uri = FileProvider.getUriForFile(this, "com.dmrasf.record.fileProvider", tempFile);
             } else if (requestCode == 2) {
-                Uri uri = data.getData();
-                Bitmap bitmap = UriToBitmap(uri);
-                savePicture(bitmap);
-                bitmap.recycle();
+                uri = data.getData();
+            }
+            SaveBitmapAsyncTask saveBitmapAsyncTask = new SaveBitmapAsyncTask();
+            saveBitmapAsyncTask.execute(uri);
+
+            TextView textViewCancel = (TextView) findViewById(R.id.dialog_cancel);
+            TextView textViewConfirm = (TextView) findViewById(R.id.dialog_confirm);
+            final EditText editText = (EditText) findViewById(R.id.dialog_edit);
+            final String[] text = {""};
+
+            TextDialog.Builder builder = new TextDialog.Builder(this);
+//            .set(textViewCancel, textViewConfirm)
+//                    .setTextConfirm(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    text[0] = editText.getText().toString();
+//                }
+//            });
+            builder.create().show();
+
+            Toast.makeText(this, text[0], Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    private class SaveBitmapAsyncTask extends AsyncTask<Uri, Integer, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Uri... uris) {
+            savePicture(uris[0]);
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean b) {
+            if (b) {
+                Toast.makeText(mainActivity, "成功保存", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    private Bitmap UriToBitmap(Uri uri) {
+    private void savePicture(Uri uri) {
+        Bitmap bitmap;
+
         ContentResolver cr = getContentResolver();
         try {
-            return BitmapFactory.decodeStream(cr.openInputStream(uri));
+            bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
         } catch (FileNotFoundException e) {
             Log.e("Exception", e.getMessage(), e);
-            return null;
+            return;
         }
-    }
 
-    private void savePicture(Bitmap bitmap) {
         if (bitmap == null) {
             Log.e("==========", "从相册或相机读取到的文件为空");
             return;
@@ -171,6 +196,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             Log.e("==========", "保存文件时出错");
         }
+
+        bitmap.recycle();
     }
 
     private void addPicToDayDb(Uri uri) {

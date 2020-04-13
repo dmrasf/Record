@@ -21,7 +21,6 @@
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     android:id="@+id/day_detail_image_view"
-                    android:src="@drawable/cheese_5"
                     app:layout_collapseMode="parallax"/>
 
             <androidx.appcompat.widget.Toolbar

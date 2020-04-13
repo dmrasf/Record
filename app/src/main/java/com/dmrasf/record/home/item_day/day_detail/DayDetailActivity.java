@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -78,17 +79,38 @@ public class DayDetailActivity extends AppCompatActivity {
     }
 
     private void initImgText() {
+        mImageView = findViewById(R.id.day_detail_image_view);
+        BitmapAsyncTask bitmapAsyncTask = new BitmapAsyncTask();
+        bitmapAsyncTask.execute();
+
+        // 显示内容
+        mTextView = findViewById(R.id.day_detail_text_view);
+        mTextView.setText(mText);
+    }
+
+    private class BitmapAsyncTask extends AsyncTask<String, Integer, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            return getBitmap();
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            mImageView.setImageBitmap(bitmap);
+        }
+    }
+
+    private Bitmap getBitmap() {
         //根据 itemDay 显示具体每一天的图片
         File path = getExternalFilesDir(mDayTableName);
         if (path == null) {
             Log.e("==========", "DayDetail 读取文件夹路径错误");
-            return;
+            return null;
         }
         String filePath = path.getPath() + File.separator + mDayImagePath;
         File file = new File(filePath);
         Uri picUri = Uri.fromFile(file);
-
-        mImageView = findViewById(R.id.day_detail_image_view);
 
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inJustDecodeBounds = true;
@@ -97,48 +119,6 @@ public class DayDetailActivity extends AppCompatActivity {
             opt.inSampleSize = (int) opt.outHeight / 1500;
         }
         opt.inJustDecodeBounds = false;
-        Bitmap bitmap = BitmapFactory.decodeFile(picUri.getPath(), opt);
-        Toast.makeText(this, picUri.getPath().toString(), Toast.LENGTH_SHORT).show();
-        mImageView.setImageBitmap(bitmap);
-
-        // 显示内容
-        mTextView = findViewById(R.id.day_detail_text_view);
-        mTextView.setText(mText);
-
-        // 其他方法读取图片
-//        File dayPic = new File(filePath);
-//        Bitmap bitmap = null;
-//        try {
-//            FileInputStream fs = new FileInputStream(dayPic);
-//            bitmap = BitmapFactory.decodeStream(fs);
-////            bitmap = BitmapFactory.decodeFile(filePath);
-//            fs.close();
-//        } catch (IOException e) {
-//            Log.e("==========", "DayDetail 读取图片错误！");
-//            Toast.makeText(this, "图片文件找不到", Toast.LENGTH_LONG).show();
-//        } finally {
-//            mImageView = findViewById(R.id.day_detail_image_view);
-////            mImageView.setImageBitmap(bitmap);
-//            mImageView.setImageURI(picUri);
-//        }
-
-//        dialog = new Dialog(this);
-//        View view = View.inflate(this, R.layout.activity_image, null);
-//        ImageView imageView = view.findViewById(R.id.day_detail_image_view);
-//        imageView.setImageResource(dayImageSource);
-//        dialog.setContentView(view);
-
+        return BitmapFactory.decodeFile(picUri.getPath(), opt);
     }
-
-    //解决toolbar返回上一级信息丢失
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        if (item.getItemId() == android.R.id.home) {
-//            Intent intent = new Intent();
-//            intent.putExtra("data", "你好，time");
-//            setResult(RESULT_OK, intent);
-//            finish();
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 }
