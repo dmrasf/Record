@@ -115,8 +115,8 @@ public class DayDetailActivity extends AppCompatActivity {
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(picUri.getPath(), opt);
-        if (opt.outHeight > 1500) {
-            opt.inSampleSize = (int) opt.outHeight / 1500;
+        if (opt.outHeight > 1000) {
+            opt.inSampleSize = (int) opt.outHeight / 1000;
         }
         opt.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(picUri.getPath(), opt);
