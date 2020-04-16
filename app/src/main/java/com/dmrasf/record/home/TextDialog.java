@@ -1,86 +1,75 @@
 package com.dmrasf.record.home;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.Window;
-import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.graphics.Point;
+import android.view.*;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.dmrasf.record.R;
 
 public class TextDialog extends Dialog {
-    public TextDialog(@NonNull Context context) {
-        super(context);
-        mContext = context;
-    }
-    private ObjectAnimator mShowAnim = null;
-    private final int mAnimDuration = 250;
-    private DisplayMetrics mDm = null;
     private Context mContext;
 
+    public TextDialog(@NonNull Context context) {
+        super(context);
+    }
+
     public static class Builder {
-        private final Context context;
-        private TextView textViewCancel;
-        private TextView textViewConfirm;
+        private final TextDialog mDialog;
+        private TextView mTextViewCancel;
+        private TextView mTextViewConfirm;
+        private View.OnClickListener mCancelListener;
+        private View.OnClickListener mConfirmListener;
+        private Context mContext;
 
         public Builder(Context context) {
-            this.context = context;
+            mContext = context;
+            mDialog = new TextDialog(context);
         }
 
-        public Builder setTextCancel(View.OnClickListener clickListener) {
-            textViewCancel.setOnClickListener(clickListener);
+        public Builder setLayout(View view) {
+            //添加布局文件到 Dialog
+            mDialog.addContentView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+            Window dialogWindow = mDialog.getWindow();
+            // 设置dialog的大小
+            WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+            // 获取屏幕实际大小
+            Point outSize = new Point();
+            ((Activity) mContext).getWindowManager().getDefaultDisplay().getRealSize(outSize);
+            int x = outSize.x;
+            int y = outSize.y;
+            // 根据屏幕大小设置dialog
+            lp.width = (int) (x * 0.8);
+            lp.height = (int) (y * 0.5);
+            lp.alpha = 0.7f;
+            dialogWindow.setAttributes(lp);
+
+            mTextViewCancel = (TextView) view.findViewById(R.id.dialog_cancel);
+            mTextViewConfirm = (TextView) view.findViewById(R.id.dialog_confirm);
             return this;
         }
 
-        public Builder setTextConfirm(View.OnClickListener clickListener) {
-            textViewConfirm.setOnClickListener(clickListener);
+        public Builder setConfirmButton(View.OnClickListener onClickListener) {
+            mConfirmListener = onClickListener;
             return this;
         }
 
         public TextDialog create() {
-            final TextDialog dialog = new TextDialog(context);
+            // 按下取消是可以关闭dialog
+            mTextViewCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mDialog.dismiss();
+                }
+            });
+            mTextViewConfirm.setOnClickListener(mConfirmListener);
 
-            Window window = dialog.getWindow();
-            window.setContentView(R.layout.dialog_text);
-
-            textViewCancel = (TextView) ((Activity) context).findViewById(R.id.dialog_cancel);
-            textViewConfirm = (TextView) ((Activity) context).findViewById(R.id.dialog_confirm);
-
-            return dialog;
+            mDialog.setCancelable(true);
+            mDialog.setCanceledOnTouchOutside(false);
+            return mDialog;
         }
-    }
-
-    @Override
-    public void show() {
-        mShowAnim = ObjectAnimator.ofFloat(mContext, "translationX", (int) (mDm.widthPixels * 0.8), 0);
-        mShowAnim.setDuration(mAnimDuration);
-        mShowAnim.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-        });
-
-        mShowAnim.start();
-        super.show();
     }
 }

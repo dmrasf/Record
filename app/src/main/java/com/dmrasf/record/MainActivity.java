@@ -2,14 +2,13 @@ package com.dmrasf.record;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Intent;
+import android.content.*;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.core.content.FileProvider;
@@ -120,29 +120,48 @@ public class MainActivity extends AppCompatActivity {
             } else if (requestCode == 2) {
                 uri = data.getData();
             }
+            // 异步操作
             SaveBitmapAsyncTask saveBitmapAsyncTask = new SaveBitmapAsyncTask();
             saveBitmapAsyncTask.execute(uri);
 
+            // 输入对话框
         }
     }
 
-    private class SaveBitmapAsyncTask extends AsyncTask<Uri, Integer, Boolean> {
+    private class SaveBitmapAsyncTask extends AsyncTask<Uri, Integer, Uri> {
 
         @Override
-        protected Boolean doInBackground(Uri... uris) {
-            savePicture(uris[0]);
-            return true;
+        protected Uri doInBackground(Uri... uris) {
+            return savePicture(uris[0]);
         }
 
         @Override
-        protected void onPostExecute(Boolean b) {
-            if (b) {
-                Toast.makeText(mainActivity, "成功保存", Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(final Uri uri) {
+            if (uri != null) {
+                // dialog 布局
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                //加载布局文件
+                View view = inflater.inflate(R.layout.dialog_text, null, false);
+
+                final EditText editText = (EditText) view.findViewById(R.id.dialog_edit);
+                // 用cancel 键代替确认键效果
+                final TextView textView = (TextView) view.findViewById(R.id.dialog_cancel);
+                final TextDialog textDialog = new TextDialog.Builder(mainActivity).setLayout(view)
+                        .setConfirmButton(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String text = editText.getText().toString();
+                                addTextToDb(text, uri);
+                                Toast.makeText(mainActivity, "成功保存", Toast.LENGTH_SHORT).show();
+                                textView.performClick();
+                            }
+                        }).create();
+                textDialog.show();
             }
         }
     }
 
-    private void savePicture(Uri uri) {
+    private Uri savePicture(Uri uri) {
         Bitmap bitmap;
 
         ContentResolver cr = getContentResolver();
@@ -150,12 +169,12 @@ public class MainActivity extends AppCompatActivity {
             bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
         } catch (FileNotFoundException e) {
             Log.e("Exception", e.getMessage(), e);
-            return;
+            return null;
         }
 
         if (bitmap == null) {
             Log.e("==========", "从相册或相机读取到的文件为空");
-            return;
+            return null;
         }
         // 保存图片到实际路径
         // 获取文件路径 不存在时会创建
@@ -168,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
         File newDay = new File(filePath);
 
         OutputStream os = null;
+        Uri insertUri = null;
         try {
             //完整大图
             os = new FileOutputStream(newDay);
@@ -175,17 +195,18 @@ public class MainActivity extends AppCompatActivity {
             os.flush();
             os.close();
             // 获取bitmap 缩小保存到 数据库中
-            addPicToDayDb(Uri.fromFile(newDay));
+            insertUri = addPicToDayDb(Uri.fromFile(newDay));
         } catch (IOException e) {
             Log.e("==========", "保存文件时出错");
         }
 
         bitmap.recycle();
+        return insertUri;
     }
 
-    private void addPicToDayDb(Uri uri) {
+    private Uri addPicToDayDb(Uri uri) {
         if (uri == null) {
-            return;
+            return null;
         }
 
         // 添加记录到数据库
@@ -199,9 +220,10 @@ public class MainActivity extends AppCompatActivity {
         ByteArrayOutputStream bitmapByte = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 1, bitmapByte);
         values.put(RecordAndDayContract.DayEntry.COLUMN_IMG, bitmapByte.toByteArray());
-        dayProvider.insert(Uri.withAppendedPath(RecordAndDayContract.BASE_CONTENT_URI, DayTableName), values);
+        return dayProvider.insert(Uri.withAppendedPath(RecordAndDayContract.BASE_CONTENT_URI, DayTableName), values);
     }
 
+    // 缩小bitmap 到数据库中
     private Bitmap resizeBitmap(Uri uri) {
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inJustDecodeBounds = true;
@@ -218,6 +240,19 @@ public class MainActivity extends AppCompatActivity {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(mPictureName) + ".jpg";
     }
 
+    // 将内容添加到数据库中
+    private void addTextToDb(String text, Uri uri) {
+        if (text.isEmpty()) {
+            return;
+        }
+
+        DayProvider dayProvider = new DayProvider(this);
+        ContentValues values = new ContentValues();
+        values.put(RecordAndDayContract.DayEntry.COLUMN_TEXT, text);
+        dayProvider.update(uri, values, null, null);
+    }
+
+    // 从 itemRecordFragment 接受信息 
     public void setRecordTitle(String title, long createTime) {
         recordTitle = title;
         DayTableName = "_" + String.valueOf(createTime);

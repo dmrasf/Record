@@ -16,4 +16,5 @@
     <string name="deleteConfirmation2">Are you sure?</string>
     <string name="deleteFail">Failed to delete!</string>
     <string name="deleteSuccessfully">Successfully deleted</string>
+    <string name="setting">Setting</string>
 </resources>

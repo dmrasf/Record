@@ -1,6 +1,8 @@
 package com.dmrasf.record.home.item_day;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.dmrasf.record.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class ItemDayAdapter extends ArrayAdapter<Day> {
@@ -35,11 +38,18 @@ public class ItemDayAdapter extends ArrayAdapter<Day> {
         imageView.setImageBitmap(currentDay.getBitmap());
 
         TextView title = (TextView) itemDetailView.findViewById(R.id.item_day_text_view);
-        title.setText(currentDay.getText());
+
+        // 过长的话 裁切显示
+        String text = currentDay.getText();
+        String m = text;
+        if (text != null && text.length() > 6) {
+            m = text.substring(0, 3) + "   · · ·";
+        }
+        title.setText(m);
 
         TextView date = (TextView) itemDetailView.findViewById(R.id.item_day_date_text_view);
-        long time = currentDay.getDate();
-        date.setText(String.valueOf(currentDay.getDate()));
+        @SuppressLint("SimpleDateFormat") String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(currentDay.getDate());
+        date.setText(time);
 
         return itemDetailView;
     }

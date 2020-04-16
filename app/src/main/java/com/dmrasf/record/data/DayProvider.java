@@ -138,6 +138,17 @@ public class DayProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case DAYS:
+                return 0;
+            case DAYS_ID:
+                selection = RecordAndDayContract.DayEntry._ID + "=?";
+                selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
+                SQLiteDatabase db = mDbHelper.getReadableDatabase();
+                return db.update(mDbHelper.Table_name, values, selection, selectionArgs);
+            default:
+                return 0;
+        }
     }
 }

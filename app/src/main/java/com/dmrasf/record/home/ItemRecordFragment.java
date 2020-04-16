@@ -102,8 +102,9 @@ public class ItemRecordFragment extends Fragment {
                         addNewRecord();
                         break;
                     }
+                    // aboutme 的 menu 用的是相同的toolbar
                     case R.id.action_settings: {
-                        break;
+                        Toast.makeText(getContext(), "Setting", Toast.LENGTH_SHORT).show();
                     }
                 }
                 return true;

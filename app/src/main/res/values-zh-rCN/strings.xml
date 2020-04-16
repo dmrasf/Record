@@ -17,4 +17,5 @@
     <string name="deleteFail">删除失败</string>
     <string name="deleteSuccessfully">删除成功</string>
     <string name="deleteConfirmation2">确定删除吗？</string>
+    <string name="setting">设r置</string>
 </resources>
