@@ -48,10 +48,6 @@ public class AboutMeFragment extends Fragment {
         ((AppCompatActivity) Objects.requireNonNull(getActivity())).setSupportActionBar(toolbar);
         setHasOptionsMenu(true);
 
-        DrawerLayout drawerLayout = (DrawerLayout) getActivity().findViewById(R.id.drawer_view);
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(getActivity(), drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        
     }
 
     @Override

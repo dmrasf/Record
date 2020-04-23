@@ -9,7 +9,6 @@
     </style>
 
     <style name="textDialog" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/text_dialog_enter</item>
         <item name="android:windowExitAnimation">@anim/text_dialog_exit</item>
     </style>
 

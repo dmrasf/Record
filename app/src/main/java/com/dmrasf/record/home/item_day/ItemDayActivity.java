@@ -146,7 +146,7 @@ public class ItemDayActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.play) {
-                    playRecord();
+                    createGif();
                 }
                 return true;
             }
@@ -154,7 +154,8 @@ public class ItemDayActivity extends AppCompatActivity {
     }
 
 
-    private void playRecord() {
+    private void createGif() {
+
     }
 
     private void getIntentFromRecord() {

@@ -90,18 +90,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        final DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_view);
-        //侧边
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                //点击后关闭
-                item.setChecked(true);
-                drawerLayout.closeDrawers();
-                return true;
-            }
-        });
 
 //        // 可以去掉bottom的选项
 //        bottomNavigationView.getMenu().removeItem(R.id.navigation_about);
