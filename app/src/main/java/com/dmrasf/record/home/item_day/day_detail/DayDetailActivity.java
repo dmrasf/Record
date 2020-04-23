@@ -32,11 +32,15 @@ public class DayDetailActivity extends AppCompatActivity {
     private String mText;
     private String mDayTableName;
     private Bitmap mBitmap;
+    private File mFilePath;
+    private DayDetailActivity mDayDetailActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.day_detail);
+
+        mDayDetailActivity = this;
 
         initToolbar();
 
@@ -56,6 +60,7 @@ public class DayDetailActivity extends AppCompatActivity {
                 View view = inflater.inflate(R.layout.dialog_fullimage, null, false);
                 dialog.addContentView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
+                dialog.getWindow().setWindowAnimations(R.style.imageDialog);
 
                 ImageView image = view.findViewById(R.id.dialog_full_image);
                 image.setImageBitmap(mBitmap);
@@ -88,10 +93,25 @@ public class DayDetailActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent();
-//                intent.putExtra("data", "你好，time");
-//                setResult(RESULT_OK, intent);
                 finish();
+            }
+        });
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.share) {
+                    // 分享自己的图片
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    Uri tempUri = FileProvider.getUriForFile(mDayDetailActivity, "com.dmrasf.record.fileProvider", mFilePath);
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, tempUri);
+                    shareIntent.putExtra("Kdescription", mText);
+                    shareIntent.setType("image/*");
+
+                    startActivity(Intent.createChooser(shareIntent, "Share Picture"));
+                }
+                return true;
             }
         });
     }
@@ -128,16 +148,16 @@ public class DayDetailActivity extends AppCompatActivity {
             return null;
         }
         String filePath = path.getPath() + File.separator + mDayImagePath;
-        File file = new File(filePath);
-        Uri picUri = Uri.fromFile(file);
+        mFilePath = new File(filePath);
+        Uri uri = Uri.fromFile(mFilePath);
 
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(picUri.getPath(), opt);
+        BitmapFactory.decodeFile(uri.getPath(), opt);
         if (opt.outHeight > 1000) {
             opt.inSampleSize = (int) opt.outHeight / 1000;
         }
         opt.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(picUri.getPath(), opt);
+        return BitmapFactory.decodeFile(uri.getPath(), opt);
     }
 }

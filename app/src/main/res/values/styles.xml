@@ -13,6 +13,11 @@
         <item name="android:windowExitAnimation">@anim/text_dialog_exit</item>
     </style>
 
+    <style name="imageDialog" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/image_dialog_enter</item>
+        <item name="android:windowExitAnimation">@anim/image_dialog_exit</item>
+    </style>
+
     <style name="FullActivity" parent="AppTheme">
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
