@@ -43,14 +43,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="50dp"
+                android:layout_marginBottom="50dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp">
 
             <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="2345"
-                    android:textSize="30sp"
+                    android:textSize="25sp"
                     android:id="@+id/day_detail_text_view" />
 
         </LinearLayout>

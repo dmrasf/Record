@@ -1,17 +1,17 @@
 package com.dmrasf.record.home.item_day.day_detail;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +31,7 @@ public class DayDetailActivity extends AppCompatActivity {
     private String mDayImagePath;
     private String mText;
     private String mDayTableName;
+    private Bitmap mBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +51,25 @@ public class DayDetailActivity extends AppCompatActivity {
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                dialog.show();
-                Toast.makeText(DayDetailActivity.this, mDayImagePath, Toast.LENGTH_SHORT).show();
+                dialog = new Dialog(v.getContext(), R.style.FullActivity);
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View view = inflater.inflate(R.layout.dialog_fullimage, null, false);
+                dialog.addContentView(view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+
+                ImageView image = view.findViewById(R.id.dialog_full_image);
+                image.setImageBitmap(mBitmap);
+
+                dialog.show();
+
+                // 点击消失
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        dialog.dismiss();
+                    }
+                });
             }
         });
     }
@@ -97,6 +115,7 @@ public class DayDetailActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Bitmap bitmap) {
+            mBitmap = bitmap;
             mImageView.setImageBitmap(bitmap);
         }
     }

@@ -42,8 +42,8 @@ public class ItemDayAdapter extends ArrayAdapter<Day> {
         // 过长的话 裁切显示
         String text = currentDay.getText();
         String m = text;
-        if (text != null && text.length() > 6) {
-            m = text.substring(0, 3) + "   · · ·";
+        if (text != null && text.length() > 10) {
+            m = text.substring(0, 8) + " ······";
         }
         title.setText(m);
 

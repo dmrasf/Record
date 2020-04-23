@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Point;
 import android.view.*;
+import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import com.dmrasf.record.R;
@@ -20,6 +21,7 @@ public class TextDialog extends Dialog {
         private final TextDialog mDialog;
         private TextView mTextViewCancel;
         private TextView mTextViewConfirm;
+        private EditText mEditText;
         private View.OnClickListener mCancelListener;
         private View.OnClickListener mConfirmListener;
         private Context mContext;
@@ -46,7 +48,10 @@ public class TextDialog extends Dialog {
             lp.height = (int) (y * 0.5);
             lp.alpha = 0.7f;
             dialogWindow.setAttributes(lp);
+            // 设置动画
+            dialogWindow.setWindowAnimations(R.style.textDialog);
 
+            mEditText = (EditText) view.findViewById(R.id.dialog_edit);
             mTextViewCancel = (TextView) view.findViewById(R.id.dialog_cancel);
             mTextViewConfirm = (TextView) view.findViewById(R.id.dialog_confirm);
             return this;
@@ -69,6 +74,12 @@ public class TextDialog extends Dialog {
 
             mDialog.setCancelable(true);
             mDialog.setCanceledOnTouchOutside(false);
+
+            // 弹出键盘
+            mEditText.setFocusable(true);
+            mEditText.setFocusableInTouchMode(true);
+            mEditText.requestFocus();
+            mDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
             return mDialog;
         }
     }
